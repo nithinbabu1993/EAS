@@ -35,12 +35,18 @@ public class HomeActivity extends AppCompatActivity {
     FirebaseFirestore db;
     String People[] = {"Choose a Category", "User", "Admin", "Hospital", "Ambulance"};
     String item = "0";
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
+        if (sp.getString("utype", "").equals("User")) {
+            startActivity(new Intent(HomeActivity.this, ChooseActivity.class));
+            finish();
+        }
         ArrayAdapter aa = new ArrayAdapter(this, android.R.layout.simple_spinner_item, People);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.spinner2.setAdapter(aa);
@@ -60,10 +66,9 @@ public class HomeActivity extends AppCompatActivity {
                     binding.regDevId.setVisibility(View.GONE);
                     binding.textView2.setVisibility(View.GONE);
                     binding.img.setVisibility(View.GONE);
-                } else if(item.equals("Choose a Category")){
+                } else if (item.equals("Choose a Category")) {
 
-                }
-                else {
+                } else {
                     binding.textView2.setVisibility(View.VISIBLE);
                     binding.regDevId.setVisibility(View.VISIBLE);
                     binding.loginpin.setVisibility(View.GONE);
@@ -131,7 +136,7 @@ public class HomeActivity extends AppCompatActivity {
                                 else
                                     Toast.makeText(HomeActivity.this, "Login Pin not Registered", Toast.LENGTH_SHORT).show();
                             } else {
-                                SharedPreferences sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
+                                sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sp.edit();
                                 editor.putString("utype", queryDocumentSnapshots.getDocuments().get(0).getString("utype"));
                                 editor.putString("name", queryDocumentSnapshots.getDocuments().get(0).getString("name"));
@@ -140,7 +145,7 @@ public class HomeActivity extends AppCompatActivity {
                                 editor.putString("devId", queryDocumentSnapshots.getDocuments().get(0).getString("devId"));
                                 editor.commit();
                                 progressDoalog.dismiss();
-                                startActivity(new Intent(HomeActivity.this,ChooseActivity.class));
+                                startActivity(new Intent(HomeActivity.this, ChooseActivity.class));
                                 finish();
                             }
 
