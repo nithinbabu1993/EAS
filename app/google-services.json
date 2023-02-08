@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "226467703181",
+    "project_id": "easervice-3a1e5",
+    "storage_bucket": "easervice-3a1e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:226467703181:android:ee0b63379f8ef3ed64f5c4",
+        "android_client_info": {
+          "package_name": "com.example.eas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "226467703181-plc7395o1g84lemcda29vr4nlevdjk7v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCK1q7n7nNL_DyJuMOG4vFzV_e43TEGFTI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "226467703181-plc7395o1g84lemcda29vr4nlevdjk7v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
