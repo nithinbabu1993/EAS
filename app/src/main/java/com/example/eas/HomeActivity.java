@@ -6,19 +6,26 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.example.eas.databinding.ActivityHomeBinding;
+import com.example.eas.model.UserModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -27,7 +34,8 @@ public class HomeActivity extends AppCompatActivity {
     String mId = "0";
     FirebaseFirestore db;
     String People[] = {"Choose a Category", "User", "Admin", "Hospital", "Ambulance"};
-    String item="0";
+    String item = "0";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,17 +54,20 @@ public class HomeActivity extends AppCompatActivity {
         binding.spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                 item = binding.spinner2.getSelectedItem().toString();
+                item = binding.spinner2.getSelectedItem().toString();
                 if (item.equals("Admin") || item.equals("Hospital") || item.equals("Ambulance")) {
                     binding.loginpin.setVisibility(View.VISIBLE);
                     binding.regDevId.setVisibility(View.GONE);
                     binding.textView2.setVisibility(View.GONE);
-                } else if (item.equals("Choose a Category")) {
-                    Toast.makeText(HomeActivity.this, "please choose a category", Toast.LENGTH_SHORT).show();
-                } else {
+                    binding.img.setVisibility(View.GONE);
+                } else if(item.equals("Choose a Category")){
+
+                }
+                else {
                     binding.textView2.setVisibility(View.VISIBLE);
                     binding.regDevId.setVisibility(View.VISIBLE);
                     binding.loginpin.setVisibility(View.GONE);
+                    binding.img.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -74,20 +85,40 @@ public class HomeActivity extends AppCompatActivity {
         binding.textView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callLoginFun();
+                callLoginFun(mId);
+            }
+        });
+        binding.loginpin.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().length() == 4) {
+                    binding.loginpin.setText("");
+                    callLoginFun(binding.loginpin.getText().toString());
+                }
+
             }
         });
     }
 
 
-    private void callLoginFun() {
+    private void callLoginFun(String DevId) {
         final ProgressDialog progressDoalog = new ProgressDialog(this);
         progressDoalog.setMessage("Checking....");
         progressDoalog.setTitle("Please wait");
         progressDoalog.setCancelable(false);
         progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDoalog.show();
-        db.collection("User").whereEqualTo("username", mId)
+        db.collection("User").whereEqualTo("devId", DevId)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -95,19 +126,22 @@ public class HomeActivity extends AppCompatActivity {
                         try {
                             if (queryDocumentSnapshots.getDocuments().isEmpty()) {
                                 progressDoalog.dismiss();
-                                Toast.makeText(HomeActivity.this, "DeviceId not Registered", Toast.LENGTH_SHORT).show();
+                                if (item.equals("User"))
+                                    Toast.makeText(HomeActivity.this, "Device Id not Registered", Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(HomeActivity.this, "Login Pin not Registered", Toast.LENGTH_SHORT).show();
                             } else {
-                                SharedPreferences sp = getSharedPreferences("logDetails", Context.MODE_PRIVATE);
+                                SharedPreferences sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sp.edit();
-                                editor = sp.edit();
-//                                Log.d("##", queryDocumentSnapshots.getDocuments().get(0).getString("userId") + "");
-//                                editor.putString("userType", queryDocumentSnapshots.getDocuments().get(0).getString("type"));
-//                                editor.putString("name", queryDocumentSnapshots.getDocuments().get(0).getString("name"));
-//                                editor.putString("mobile", queryDocumentSnapshots.getDocuments().get(0).getString("phone"));
-//                                editor.putString("userId", queryDocumentSnapshots.getDocuments().get(0).getString("userId"));
-//                                editor.putString("userDocID", queryDocumentSnapshots.getDocuments().get(0).getId());
+                                editor.putString("utype", queryDocumentSnapshots.getDocuments().get(0).getString("utype"));
+                                editor.putString("name", queryDocumentSnapshots.getDocuments().get(0).getString("name"));
+                                editor.putString("mobile", queryDocumentSnapshots.getDocuments().get(0).getString("phone"));
+                                editor.putString("address", queryDocumentSnapshots.getDocuments().get(0).getString("address"));
+                                editor.putString("devId", queryDocumentSnapshots.getDocuments().get(0).getString("devId"));
                                 editor.commit();
                                 progressDoalog.dismiss();
+                                startActivity(new Intent(HomeActivity.this,ChooseActivity.class));
+                                finish();
                             }
 
                         } catch (Exception e) {
@@ -125,6 +159,56 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void callRegisterFun() {
+        final ProgressDialog progressDoalog = new ProgressDialog(this);
+        progressDoalog.setMessage("Checking....");
+        progressDoalog.setTitle("Please wait");
+        progressDoalog.setCancelable(false);
+        progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDoalog.show();
+        db.collection("User").whereEqualTo("devId", mId).get().
+                addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (queryDocumentSnapshots.getDocuments().isEmpty()) {
+                            userRegistration(mId);
+                            progressDoalog.dismiss();
+                        } else {
+                            progressDoalog.dismiss();
+                            Toast.makeText(HomeActivity.this, "This Device Already registered", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).
+                addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //userRegistration();
+                        Toast.makeText(HomeActivity.this, "Creation failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
+
+    private void userRegistration(String number) {
+        UserModel obj = new UserModel(number, "", "", "", "User");
+        db = FirebaseFirestore.getInstance();
+        db.collection("User").add(obj).
+                addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                    }
+                }).
+                addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(HomeActivity.this, "Creation failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        moveTaskToBack(true);
+        finish();
     }
 }
