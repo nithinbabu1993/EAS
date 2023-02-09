@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-<uses-permission android:name="android.permission.INTERNET"/>
+    xmlns:tools="http://schemas.android.com/tools" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,18 +19,53 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.EAS"
-        tools:targetApi="31">
+        tools:targetApi="31" >
+
+        <!--
+             TODO: Before you run your application, you need a Google Maps API key.
+
+             To get one, follow the directions here:
+
+                https://developers.google.com/maps/documentation/android-sdk/get-api-key
+
+             Once you have your API key (it starts with "AIza"), define a new property in your
+             project's local.properties file (e.g. MAPS_API_KEY=Aiza...), and replace the
+             "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
+        -->
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+        <service android:name=".settings.LocationMonitoringService" />
+        <service
+            android:name=".settings.MyService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <receiver
+            android:name=".settings.SensorRestarterBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:label="RestartServiceWhenStopped" />
+        <receiver
+            android:name=".settings.restartShake"
+            android:enabled="true"
+            android:exported="true"
+            android:label="RestartServiceWhenStopped" />
+
         <activity
             android:name=".ChooseActivity"
             android:exported="false" />
         <activity
             android:name=".HomeActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
