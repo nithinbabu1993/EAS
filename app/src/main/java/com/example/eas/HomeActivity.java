@@ -3,11 +3,13 @@ package com.example.eas;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Editable;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.eas.databinding.ActivityHomeBinding;
 import com.example.eas.model.UserModel;
+import com.example.eas.settings.LocationMonitoringService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
@@ -212,7 +215,9 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        moveTaskToBack(true);
         finish();
+        moveTaskToBack(true);
+
     }
+
 }

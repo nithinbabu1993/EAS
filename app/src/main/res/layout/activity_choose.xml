@@ -1,19 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#F80249"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F80249"
     tools:context=".ChooseActivity">
-    <fragment  android:id="@+id/map"
+
+    <fragment
+        android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
-        tools:context=".ChooseActivity"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="400dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:context=".ChooseActivity"/>
 
-       </fragment>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <com.github.clans.fab.FloatingActionMenu
+            android:id="@+id/floatingMenu1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:menu_icon="@drawable/ic_profile_image_placeholder"
+            fab:menu_animationDelayPerItem="0"
+            fab:menu_backgroundColor="#ccffffff"
+            fab:menu_colorNormal="#DEE8E6"
+            fab:menu_colorPressed="#D9DCDB"
+            fab:menu_colorRipple="#E6EFED"
+            fab:menu_fab_label="Cancel"
+            fab:menu_labels_ellipsize="end"
+            fab:menu_labels_singleLine="true">
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/endride"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/logout"
+                app:fab_colorNormal="@color/white"
+                fab:fab_label="Change user/Logout"
+                fab:fab_size="mini" />
+
+
+        </com.github.clans.fab.FloatingActionMenu>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

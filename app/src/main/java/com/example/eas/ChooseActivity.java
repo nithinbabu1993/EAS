@@ -24,20 +24,25 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
+import com.example.eas.databinding.ActivityChooseBinding;
 import com.example.eas.settings.GPSTracker;
 import com.example.eas.settings.LocationMonitoringService;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class ChooseActivity extends FragmentActivity implements OnMapReadyCallback {
-GPSTracker gps;
+    GPSTracker gps;
     private GoogleMap mMap;
+    ActivityChooseBinding binding;
 
     private int STORAGE_PERMISSION_CODE = 23;
     boolean somePermissionsForeverDenied = false;
@@ -47,25 +52,15 @@ GPSTracker gps;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose);
+        binding = ActivityChooseBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            Intent serviceIntent = new Intent(getApplicationContext(), LocationMonitoringService.class);
-//            ContextCompat.startForegroundService(getApplicationContext(), serviceIntent);
-//
-//        } else {
-//            Intent intent1 = new Intent(getApplicationContext(), LocationMonitoringService.class);
-//            startService(intent1);
-//        }
-//    }
+
 
     /**
      * Manipulates the map once available.
@@ -78,10 +73,8 @@ GPSTracker gps;
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        gps=new GPSTracker(this);
-        Toast.makeText(ChooseActivity.this, gps.getLatitude() + "\n"+gps.getLatitude() + "", Toast.LENGTH_SHORT).show();
-
         mMap = googleMap;
+
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -93,6 +86,7 @@ GPSTracker gps;
             return;
         }
         mMap.setMyLocationEnabled(true);
+
         // Add a marker in Sydney and move the camera
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 new BroadcastReceiver() {
@@ -100,11 +94,17 @@ GPSTracker gps;
                     public void onReceive(Context context, Intent intent) {
                         latitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LATITUDE);
                         longitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LONGITUDE);
-                         Toast.makeText(ChooseActivity.this, latitude + longitude + "", Toast.LENGTH_SHORT).show();
+                      //  Toast.makeText(ChooseActivity.this, latitude + longitude + "", Toast.LENGTH_SHORT).show();
                         if (latitude != null && longitude != null) {
                             LatLng latLng = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
                             CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(12).build();
                             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                            mMap.clear();
+                            mMap.addMarker(new MarkerOptions()
+                                    .position(latLng)
+                                    .title("you are Here")
+                                    .icon(BitmapDescriptorFactory
+                                            .defaultMarker(BitmapDescriptorFactory.HUE_RED))).showInfoWindow();
 
                         }
                     }
@@ -159,7 +159,22 @@ GPSTracker gps;
 //                }
 //            }
 //        });
-
+        binding.endride.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("utype", "");
+                editor.putString("name", "");
+                editor.putString("mobile", "");
+                editor.putString("address", "");
+                editor.putString("devId", "");
+                editor.commit();
+                Intent i = new Intent(ChooseActivity.this, HomeActivity.class);
+                startActivity(i); // invoke the SecondActivity.
+                finish();
+            }
+        });
     }
 
     //We are calling this method to check the permission status
@@ -264,21 +279,11 @@ GPSTracker gps;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id){
+        switch (id) {
             case R.id.item1:
-                SharedPreferences sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putString("utype", "");
-                editor.putString("name", "");
-                editor.putString("mobile", "");
-                editor.putString("address", "");
-                editor.putString("devId", "");
-                editor.commit();
-                Intent i = new Intent(ChooseActivity.this, HomeActivity.class);
-                startActivity(i); // invoke the SecondActivity.
-                finish();
+
                 return true;
-           default:
+            default:
                 return super.onOptionsItemSelected(item);
         }
     }
