@@ -6,14 +6,25 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
-public class AdminHome extends AppCompatActivity {
+import com.example.eas.databinding.ActivityAdminHomeBinding;
 
+public class AdminHome extends AppCompatActivity {
+ActivityAdminHomeBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_home);
+        binding=ActivityAdminHomeBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        binding.addhosp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AdminHome.this, NewHospital.class));
+                finish();
+            }
+        });
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
