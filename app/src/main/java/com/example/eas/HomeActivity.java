@@ -45,11 +45,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
-        if (sp.getString("utype", "").equals("User")) {
-            startActivity(new Intent(HomeActivity.this, ChooseActivity.class));
-            finish();
-        }
+
         ArrayAdapter aa = new ArrayAdapter(this, android.R.layout.simple_spinner_item, People);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.spinner2.setAdapter(aa);
@@ -110,8 +106,8 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.toString().length() == 4) {
-                    binding.loginpin.setText("");
                     callLoginFun(binding.loginpin.getText().toString());
+                    binding.loginpin.setText("");
                 }
 
             }
@@ -139,17 +135,27 @@ public class HomeActivity extends AppCompatActivity {
                                 else
                                     Toast.makeText(HomeActivity.this, "Login Pin not Registered", Toast.LENGTH_SHORT).show();
                             } else {
+
                                 sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sp.edit();
                                 editor.putString("utype", queryDocumentSnapshots.getDocuments().get(0).getString("utype"));
+                                editor.putString("docId", queryDocumentSnapshots.getDocuments().get(0).getId());
                                 editor.putString("name", queryDocumentSnapshots.getDocuments().get(0).getString("name"));
                                 editor.putString("mobile", queryDocumentSnapshots.getDocuments().get(0).getString("phone"));
                                 editor.putString("address", queryDocumentSnapshots.getDocuments().get(0).getString("address"));
                                 editor.putString("devId", queryDocumentSnapshots.getDocuments().get(0).getString("devId"));
                                 editor.commit();
                                 progressDoalog.dismiss();
-                                startActivity(new Intent(HomeActivity.this, ChooseActivity.class));
-                                finish();
+                                if(queryDocumentSnapshots.getDocuments().get(0).getString("utype").equals("User")) {
+                                    Toast.makeText(HomeActivity.this, "Login successfull as user", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(HomeActivity.this, ChooseActivity.class));
+                                    finish();
+                                }
+                                else if(queryDocumentSnapshots.getDocuments().get(0).getString("utype").equals("Admin")) {
+                                    Toast.makeText(HomeActivity.this, "Login successfull as admin", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(HomeActivity.this, AdminHome.class));
+                                    finish();
+                                }
                             }
 
                         } catch (Exception e) {
@@ -195,6 +201,16 @@ public class HomeActivity extends AppCompatActivity {
                 });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
+        if (sp.getString("utype", "").equals("User")) {
+            startActivity(new Intent(HomeActivity.this, ChooseActivity.class));
+            finish();
+        }
+
+    }
 
     private void userRegistration(String number) {
         UserModel obj = new UserModel(number, "", "", "", "User");
@@ -203,6 +219,7 @@ public class HomeActivity extends AppCompatActivity {
                 addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
+                        Toast.makeText(HomeActivity.this, "Device Registered successfully", Toast.LENGTH_SHORT).show();
                     }
                 }).
                 addOnFailureListener(new OnFailureListener() {

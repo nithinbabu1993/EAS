@@ -57,6 +57,27 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        latitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LATITUDE);
+                        longitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LONGITUDE);
+                          //Toast.makeText(ChooseActivity.this, latitude + longitude + "", Toast.LENGTH_SHORT).show();
+                        if (latitude != null && longitude != null) {
+                            LatLng latLng = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+                            CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(12).build();
+                            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                            mMap.clear();
+                            mMap.addMarker(new MarkerOptions()
+                                    .position(latLng)
+                                    .title("you are Here")
+                                    .icon(BitmapDescriptorFactory
+                                            .defaultMarker(BitmapDescriptorFactory.HUE_RED))).showInfoWindow();
+
+                        }
+                    }
+                }, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST));
 
     }
 
@@ -88,28 +109,8 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
         mMap.setMyLocationEnabled(true);
 
         // Add a marker in Sydney and move the camera
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        latitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LATITUDE);
-                        longitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LONGITUDE);
-                      //  Toast.makeText(ChooseActivity.this, latitude + longitude + "", Toast.LENGTH_SHORT).show();
-                        if (latitude != null && longitude != null) {
-                            LatLng latLng = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
-                            CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(12).build();
-                            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                            mMap.clear();
-                            mMap.addMarker(new MarkerOptions()
-                                    .position(latLng)
-                                    .title("you are Here")
-                                    .icon(BitmapDescriptorFactory
-                                            .defaultMarker(BitmapDescriptorFactory.HUE_RED))).showInfoWindow();
 
-                        }
-                    }
-                }, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST)
-        );
+
 
 //
 //                            if (latitude != null && longitude != null) {
@@ -171,6 +172,14 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
                 editor.putString("devId", "");
                 editor.commit();
                 Intent i = new Intent(ChooseActivity.this, HomeActivity.class);
+                startActivity(i); // invoke the SecondActivity.
+                finish();
+            }
+        });
+        binding.address.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ChooseActivity.this, UpdateAddress.class);
                 startActivity(i); // invoke the SecondActivity.
                 finish();
             }
@@ -290,7 +299,8 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
 
     @Override
     public void onBackPressed() {
-        moveTaskToBack(true);
         finish();
+        moveTaskToBack(true);
+
     }
 }

@@ -16,8 +16,7 @@
         android:layout_height="400dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:context=".ChooseActivity"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
         <com.github.clans.fab.FloatingActionMenu
             android:id="@+id/floatingMenu1"
@@ -28,7 +27,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:menu_icon="@drawable/ic_profile_image_placeholder"
+            app:menu_icon="@drawable/fab"
             fab:menu_animationDelayPerItem="0"
             fab:menu_backgroundColor="#ccffffff"
             fab:menu_colorNormal="#DEE8E6"
@@ -42,9 +41,17 @@
                 android:id="@+id/endride"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/logout"
+                android:src="@drawable/side_menu_logout"
                 app:fab_colorNormal="@color/white"
                 fab:fab_label="Change user/Logout"
+                fab:fab_size="mini" />
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_contact_supply"
+                app:fab_colorNormal="@color/white"
+                fab:fab_label="Update your address"
                 fab:fab_size="mini" />
 
 
