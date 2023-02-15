@@ -305,6 +305,7 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Toast.makeText(HomeActivity.this, "Device Registered successfully", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(getApplicationContext(),HomeActivity.class));finish();
                     }
                 }).
                 addOnFailureListener(new OnFailureListener() {
