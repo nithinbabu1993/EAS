@@ -39,7 +39,7 @@
     android:inputType="textPersonName"
     android:hint="Enter Hospital name"/>
     <androidx.appcompat.widget.AppCompatEditText
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/haddress"
         android:background="@drawable/bg_bordered_sky_blue"
