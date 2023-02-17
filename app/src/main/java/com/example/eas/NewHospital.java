@@ -141,6 +141,12 @@ public class NewHospital extends FragmentActivity implements OnMapReadyCallback 
             mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
                 public void onMapClick(LatLng latLng) {
+                    final ProgressDialog progressDoalog = new ProgressDialog(NewHospital.this);
+                    progressDoalog.setMessage("Checking....");
+                    progressDoalog.setTitle("Please wait");
+                    progressDoalog.setCancelable(false);
+                    progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progressDoalog.show();
                     mMap.clear();
                     try {
                         if (geo == null)
@@ -155,7 +161,9 @@ public class NewHospital extends FragmentActivity implements OnMapReadyCallback 
                                     + "\n. Address:" + address.get(0).getAddressLine(0));
 
                         }
+                        progressDoalog.dismiss();
                     } catch (IOException ex) {
+                        progressDoalog.dismiss();
                         if (ex != null)
                             Toast.makeText(NewHospital.this, "Error:" + ex.getMessage().toString(), Toast.LENGTH_LONG).show();
                     }
