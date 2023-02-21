@@ -1,7 +1,6 @@
 package com.example.eas;
 
 import static android.Manifest.permission.CALL_PHONE;
-
 import static java.lang.Double.parseDouble;
 
 import androidx.annotation.NonNull;
@@ -12,7 +11,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -23,7 +21,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -49,18 +46,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.DexterError;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.PermissionRequestErrorListener;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChooseActivity extends FragmentActivity implements OnMapReadyCallback {
+public class HospitalInMap extends FragmentActivity implements OnMapReadyCallback {
     GPSTracker gps;
     private GoogleMap mMap;
     ActivityChooseBinding binding;
@@ -70,16 +60,14 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
     String latitude, longitude;
     Boolean b = false;
     ProgressDialog progressDoalog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityChooseBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView(R.layout.activity_hospital_in_map);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        progressDoalog = new ProgressDialog(ChooseActivity.this);
+        progressDoalog = new ProgressDialog(HospitalInMap.this);
         progressDoalog.setMessage("Loading....");
         progressDoalog.setTitle("Please wait");
         progressDoalog.setCancelable(false);
@@ -112,30 +100,7 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
                     }
                 }, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST));
 
-        binding.endride.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putString("utype", "");
-                editor.putString("name", "");
-                editor.putString("mobile", "");
-                editor.putString("address", "");
-                editor.putString("devId", "");
-                editor.commit();
-                Intent i = new Intent(ChooseActivity.this, HomeActivity.class);
-                startActivity(i); // invoke the SecondActivity.
-                finish();
-            }
-        });
-        binding.address.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(ChooseActivity.this, UpdateAddress.class);
-                startActivity(i); // invoke the SecondActivity.
-                finish();
-            }
-        });
+
     }
 
 
@@ -164,150 +129,13 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
         }
         mMap.setMyLocationEnabled(true);
 
-//        navigate.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                fab.close(true);
-//                final Intent intent1 = new Intent(Intent.ACTION_VIEW,
-//                        Uri.parse("http://maps.google.com/maps?"
-//                                + "saddr=" + latitude + "," +longitude + "&daddr=" + sp.getString("dlat","") + "," + sp.getString("dlon","")));
-//                intent1.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-//                startActivity(intent1);
-//            }
-//        });
-//        call.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (isReadStorageAllowed()) {
-//                    fab.close(true);
-//                    Intent intent = new Intent(Intent.ACTION_DIAL);
-//                    intent.setData(Uri.parse("tel:" + sp.getString("phone", "")));
-//                    startActivity(intent);
-//                }
-//                else{
-//                    requestStoragePermission();
-//                }
-//            }
-//        });
 
-    }
-
-    //We are calling this method to check the permission status
-    private boolean isReadStorageAllowed() {
-        //Getting the permission status
-        int result = ContextCompat.checkSelfPermission(this, CALL_PHONE);
-
-        //If permission is granted returning true
-        if (result == PackageManager.PERMISSION_GRANTED)
-            return true;
-
-        //If permission is not granted returning false
-        return false;
-    }
-
-    //Requesting permission
-    private void requestStoragePermission() {
-
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, CALL_PHONE)) {
-            //If the user has denied the permission previously your code will come to this block
-            //Here you can explain why you need this permission
-            //Explain here why you need this permission
-        }
-
-        //And finally ask for the permission
-        ActivityCompat.requestPermissions(this, new String[]{CALL_PHONE}, STORAGE_PERMISSION_CODE);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (permissions.length == 0) {
-            return;
-        }
-        boolean allPermissionsGranted = true;
-        if (grantResults.length > 0) {
-            for (int grantResult : grantResults) {
-                if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                    allPermissionsGranted = false;
-                    break;
-                }
-            }
-        }
-        if (!allPermissionsGranted) {
-
-            for (String permission : permissions) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-                    //denied
-                    Log.e("denied", permission);
-                    // requestStoragePermission();
-                } else {
-                    if (ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
-                        //allowed
-                        Log.e("allowed", permission);
-                    } else {
-                        //set to never ask again
-                        Log.e("set to never ask again", permission);
-                        somePermissionsForeverDenied = true;
-                    }
-                }
-            }
-            if (somePermissionsForeverDenied) {
-                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-                alertDialogBuilder.setTitle("Permissions Required")
-                        .setMessage("You have forcefully denied some of the required permissions " +
-                                "for this action. Please open settings, go to permissions and allow them.")
-                        .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                        Uri.fromParts("package", getPackageName(), null));
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        })
-                        .setCancelable(false)
-                        .create()
-                        .show();
-            }
-
-        } else {
-            switch (requestCode) {
-                //act according to the request code used while requesting the permission(s).
-            }
-        }
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.item1:
-
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     @Override
     public void onBackPressed() {
+        startActivity(new Intent(HospitalInMap.this, AdminHome.class));
         finish();
-        moveTaskToBack(true);
-
     }
 
     private void showData() {
@@ -348,7 +176,7 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
                                         LatLng latLng = new LatLng(Double.parseDouble(Hlist.get(i).getHlatitude()), Double.parseDouble(Hlist.get(i).getHlongitude()));
                                         CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(12).build();
                                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                                      //  mMap.clear();
+                                        //  mMap.clear();
 
                                         mMap.addMarker(new MarkerOptions()
                                                 .position(latLng)
@@ -357,16 +185,16 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
                                                         .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))).showInfoWindow();
 
                                     }
-                                    mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                                        public void onInfoWindowClick(Marker marker) {
-                                            SharedPreferences sd=getSharedPreferences("hospital",Context.MODE_PRIVATE);
-                                            SharedPreferences.Editor ed=sd.edit();
-                                            ed.putString("hname",marker.getTitle());
-                                            ed.commit();
-                                            startActivity(new Intent(getApplicationContext(), ShowAmbulance.class));
-                                            finish();
-                                        }
-                                    });
+//                                    mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+//                                        public void onInfoWindowClick(Marker marker) {
+//                                            SharedPreferences sd=getSharedPreferences("hospital",Context.MODE_PRIVATE);
+//                                            SharedPreferences.Editor ed=sd.edit();
+//                                            ed.putString("hname",marker.getTitle());
+//                                            ed.commit();
+//                                            startActivity(new Intent(getApplicationContext(), ShowAmbulance.class));
+//                                            finish();
+//                                        }
+//                                    });
                                 }
                             } catch (Exception e) {
                             }
@@ -383,4 +211,5 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
                 });
 
     }
+
 }

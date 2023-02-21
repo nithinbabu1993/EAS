@@ -25,6 +25,13 @@ ActivityAdminHomeBinding binding;
                 finish();
             }
         });
+        binding.hospmap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AdminHome.this, HospitalInMap.class));
+                finish();
+            }
+        });
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
