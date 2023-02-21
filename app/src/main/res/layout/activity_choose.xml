@@ -16,7 +16,8 @@
         android:layout_height="400dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
         <com.github.clans.fab.FloatingActionMenu
             android:id="@+id/floatingMenu1"
