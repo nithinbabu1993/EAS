@@ -44,6 +44,7 @@
                 android:src="@drawable/side_menu_logout"
                 app:fab_colorNormal="@color/white"
                 fab:fab_label="Change user/Logout"
+                android:clickable="true"
                 fab:fab_size="mini" />
             <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/address"
@@ -51,6 +52,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_contact_supply"
                 app:fab_colorNormal="@color/white"
+                android:clickable="true"
                 fab:fab_label="Update your address"
                 fab:fab_size="mini" />
 

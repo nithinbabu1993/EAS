@@ -90,6 +90,30 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
                     }
                 }, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST));
 
+        binding.endride.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("utype", "");
+                editor.putString("name", "");
+                editor.putString("mobile", "");
+                editor.putString("address", "");
+                editor.putString("devId", "");
+                editor.commit();
+                Intent i = new Intent(ChooseActivity.this, HomeActivity.class);
+                startActivity(i); // invoke the SecondActivity.
+                finish();
+            }
+        });
+        binding.address.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ChooseActivity.this, UpdateAddress.class);
+                startActivity(i); // invoke the SecondActivity.
+                finish();
+            }
+        });
     }
 
 
@@ -171,30 +195,7 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
 //                }
 //            }
 //        });
-        binding.endride.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putString("utype", "");
-                editor.putString("name", "");
-                editor.putString("mobile", "");
-                editor.putString("address", "");
-                editor.putString("devId", "");
-                editor.commit();
-                Intent i = new Intent(ChooseActivity.this, HomeActivity.class);
-                startActivity(i); // invoke the SecondActivity.
-                finish();
-            }
-        });
-        binding.address.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(ChooseActivity.this, UpdateAddress.class);
-                startActivity(i); // invoke the SecondActivity.
-                finish();
-            }
-        });
+
     }
 
     //We are calling this method to check the permission status
