@@ -32,6 +32,13 @@ ActivityAdminHomeBinding binding;
                 finish();
             }
         });
+        binding.allhosp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AdminHome.this, HospitalList.class));
+                finish();
+            }
+        });
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

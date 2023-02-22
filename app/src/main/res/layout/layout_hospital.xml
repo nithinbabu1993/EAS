@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:id="@+id/root"
+    android:background="@drawable/bg_bordered_sky_blue">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/labelName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/din_medium"
+        android:text="Hospital Name    : "
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvPatientName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:maxLines="3"
+        android:layout_marginEnd="4dp"
+        android:fontFamily="@font/din_medium"
+        android:text="Name of a patient "
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/labelName"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/labelAge"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/din_medium"
+        android:text="Age                        :  "
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/labelName"
+        app:layout_constraintTop_toBottomOf="@+id/labelName" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvPatientAge"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:fontFamily="@font/din_medium"
+        android:text="  30"
+        android:visibility="gone"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/labelAge"
+        app:layout_constraintTop_toTopOf="@id/labelAge" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/labelPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/din_medium"
+        android:layout_marginTop="16dp"
+        android:text="Phone                    :"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/labelAge"
+        app:layout_constraintTop_toBottomOf="@+id/labelAge" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvPatientPhone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="4dp"
+        android:fontFamily="@font/din_medium"
+        android:text="9567563300"
+        android:inputType="phone"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/labelPhone"
+        app:layout_constraintTop_toTopOf="@id/labelPhone" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/labelAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/din_medium"
+        android:layout_marginTop="16dp"
+        android:text="Address                : "
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/labelName"
+        app:layout_constraintTop_toBottomOf="@+id/labelPhone" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvPatientAddress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/din_medium"
+        android:text="Address of a person\nPost name pin code "
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/labelAddress"
+        app:layout_constraintTop_toTopOf="@id/labelAddress" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

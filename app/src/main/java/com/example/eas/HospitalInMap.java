@@ -163,6 +163,7 @@ public class HospitalInMap extends FragmentActivity implements OnMapReadyCallbac
                                     queryDocumentSnapshots.getDocuments().get(i).getString("hlongitude")));
                         }
                         if (Hlist.isEmpty()) {
+                            Toast.makeText(getApplicationContext(), "No hospitals found", Toast.LENGTH_SHORT).show();
 
                         } else {
                             try {
