@@ -2,8 +2,10 @@ package com.example.eas.Adapter;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,12 +51,14 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.Myvi
         holder.aname.setText(dm.getAname());
         holder.dname.setText(dm.getName());
         holder.dphone.setText(dm.getPhone());
-        holder.labelname.setText("Ambulance name \t:\t");
-        holder.labelphone.setText("driver Phone \t:\t");
-        holder.labeladdress.setText("driver name \t:\t");
+        holder.labelname.setText("Ambulance name :\t");
+        holder.labelphone.setText("driver Phone \t\t\t\t\t:\t");
+        holder.labeladdress.setText("driver name \t\t\t\t\t\t:\t");
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SharedPreferences sp = view.getRootView().getContext().getSharedPreferences("LoginData", Context.MODE_PRIVATE);
+                if (sp.getString("utype", "").equals("Hospital")) {
                 AlertDialog.Builder alertbox = new AlertDialog.Builder(view.getRootView().getContext());
                 alertbox.setMessage("Do you really wants to Delete this Ambulance?");
                 alertbox.setTitle("Delete!!");
@@ -62,7 +66,8 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.Myvi
                 alertbox.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        deleteDepartment(dm.getDevId(), view, holder.getAdapterPosition());
+
+                            deleteDepartment(dm.getDevId(), view, holder.getAdapterPosition());
 
                     }
                 });
@@ -74,6 +79,9 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.Myvi
                 });
 
                 alertbox.show();
+                }else{
+
+                }
             }
         });
     }
@@ -84,17 +92,18 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.Myvi
     }
 
     public class MyviewHolder extends RecyclerView.ViewHolder {
-        TextView aname, dname, dphone,labelname,labelphone,labeladdress;
+        TextView aname, dname, dphone, labelname, labelphone, labeladdress;
         ConstraintLayout root;
+
         public MyviewHolder(@NonNull LayoutHospitalBinding binding) {
             super(binding.getRoot());
             aname = binding.tvPatientName;
             root = binding.root;
             dname = binding.tvPatientAddress;
             dphone = binding.tvPatientPhone;
-            labelname = binding.tvPatientPhone;
-            labelphone = binding.tvPatientPhone;
-            labeladdress = binding.tvPatientPhone;
+            labelname = binding.labelName;
+            labelphone = binding.labelPhone;
+            labeladdress = binding.labelAddress;
         }
     }
 
@@ -115,7 +124,7 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.Myvi
                         Intent i = new Intent(view.getRootView().getContext(), AddAmbulance.class);
                         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         view.getRootView().getContext().startActivity(i);
-                        Toast.makeText(view.getRootView().getContext(), " Hospital removed successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(view.getRootView().getContext(), " Ambulance removed successfully", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
