@@ -12,52 +12,52 @@
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-      android:layout_width="match_parent"
+        android:layout_width="match_parent"
         android:layout_height="400dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/floatingMenu1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        />
+        app:menu_icon="@drawable/fab"
+        fab:menu_animationDelayPerItem="0"
+        fab:menu_backgroundColor="#ccffffff"
+        fab:menu_colorNormal="#DEE8E6"
+        fab:menu_colorPressed="#D9DCDB"
+        fab:menu_colorRipple="#E6EFED"
+        fab:menu_fab_label="Cancel"
+        fab:menu_labels_ellipsize="end"
+        fab:menu_labels_singleLine="true">
 
-        <com.github.clans.fab.FloatingActionMenu
-            android:id="@+id/floatingMenu1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:menu_icon="@drawable/fab"
-            fab:menu_animationDelayPerItem="0"
-            fab:menu_backgroundColor="#ccffffff"
-            fab:menu_colorNormal="#DEE8E6"
-            fab:menu_colorPressed="#D9DCDB"
-            fab:menu_colorRipple="#E6EFED"
-            fab:menu_fab_label="Cancel"
-            fab:menu_labels_ellipsize="end"
-            fab:menu_labels_singleLine="true">
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/endride"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:src="@drawable/side_menu_logout"
+            app:fab_colorNormal="@color/white"
+            fab:fab_label="Change user/Logout"
+            fab:fab_size="mini" />
 
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/endride"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/side_menu_logout"
-                app:fab_colorNormal="@color/white"
-                fab:fab_label="Change user/Logout"
-                android:clickable="true"
-                fab:fab_size="mini" />
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_contact_supply"
-                app:fab_colorNormal="@color/white"
-                android:clickable="true"
-                fab:fab_label="Update your address"
-                fab:fab_size="mini" />
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:src="@drawable/ic_contact_supply"
+            app:fab_colorNormal="@color/white"
+            fab:fab_label="Update your address"
+            fab:fab_size="mini" />
 
 
-        </com.github.clans.fab.FloatingActionMenu>
+    </com.github.clans.fab.FloatingActionMenu>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
