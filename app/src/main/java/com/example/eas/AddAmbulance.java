@@ -80,7 +80,7 @@ public class AddAmbulance extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Toast.makeText(AddAmbulance.this, "Ambulance Registered successfully", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getApplicationContext(), NewHospital.class));
+                        startActivity(new Intent(getApplicationContext(), AddAmbulance.class));
                         finish();
                     }
                 }).
