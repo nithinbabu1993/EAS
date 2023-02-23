@@ -103,6 +103,7 @@
         android:maxLength="4"
         android:background="@drawable/bg_bordered_sky_blue"
         android:minHeight="50dp"
+        android:textColor="@color/black"
         android:layout_marginHorizontal="30dp"
         android:textColorHint="@color/black"
         android:inputType="number"
