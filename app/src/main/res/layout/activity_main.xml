@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="#F80249"
+    android:background="#FAA8A8"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/din_next_lt_arabic_bold"
         android:text="Emergency Ambulance Service"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

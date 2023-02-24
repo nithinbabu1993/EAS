@@ -20,7 +20,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EAS"
         tools:targetApi="31">
-
+        <activity
+            android:name=".Dashboard.UserAllHospital"
+            android:exported="false" />
+        <activity
+            android:name=".Dashboard.UserDashBoard"
+            android:exported="false"
+            android:label="@string/title_activity_user_dash_board"
+            android:theme="@style/Theme.EAS.NoActionBar" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 

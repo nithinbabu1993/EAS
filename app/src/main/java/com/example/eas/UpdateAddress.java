@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.eas.Dashboard.UserDashBoard;
 import com.example.eas.databinding.ActivityUpdateAddressBinding;
 import com.example.eas.model.UserModel;
 import com.example.eas.settings.Validation;
@@ -67,7 +68,7 @@ public class UpdateAddress extends AppCompatActivity {
                     public void onSuccess(Void unused) {
                         progressDoalog.dismiss();
                         Toast.makeText(UpdateAddress.this, "Address updated", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(UpdateAddress.this, ChooseActivity.class));
+                        startActivity(new Intent(UpdateAddress.this, UserDashBoard.class));
                         finish();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -82,7 +83,7 @@ public class UpdateAddress extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(UpdateAddress.this, ChooseActivity.class));
+        startActivity(new Intent(UpdateAddress.this, UserDashBoard.class));
         finish();
 
     }

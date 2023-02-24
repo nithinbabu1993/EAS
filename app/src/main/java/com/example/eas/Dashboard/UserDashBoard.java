@@ -1,18 +1,8 @@
-package com.example.eas;
+package com.example.eas.Dashboard;
 
 import static android.Manifest.permission.CALL_PHONE;
-
 import static java.lang.Double.parseDouble;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -23,19 +13,27 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Menu;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
+import com.example.eas.ChooseActivity;
+import com.example.eas.HomeActivity;
+import com.example.eas.R;
+import com.example.eas.ShowAmbulance;
+import com.example.eas.UpdateAddress;
 import com.example.eas.databinding.ActivityChooseBinding;
+import com.example.eas.databinding.ActivityUserDashBoardBinding;
 import com.example.eas.model.Hospitalmodel;
 import com.example.eas.settings.GPSTracker;
 import com.example.eas.settings.LocationMonitoringService;
+import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -47,39 +45,52 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.DexterError;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.PermissionRequestErrorListener;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChooseActivity extends FragmentActivity implements OnMapReadyCallback {
+public class UserDashBoard extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
+FloatingActionButton address,endride;
+    private AppBarConfiguration mAppBarConfiguration;
+    private ActivityUserDashBoardBinding binding;
     GPSTracker gps;
     private GoogleMap mMap;
-    ActivityChooseBinding binding;
     List<Hospitalmodel> Hlist = new ArrayList();
     private int STORAGE_PERMISSION_CODE = 23;
     boolean somePermissionsForeverDenied = false;
     String latitude, longitude;
     Boolean b = false;
     ProgressDialog progressDoalog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityChooseBinding.inflate(getLayoutInflater());
+
+        binding = ActivityUserDashBoardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        setSupportActionBar(binding.appBarUserDashBoard.toolbar);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        progressDoalog = new ProgressDialog(ChooseActivity.this);
+        progressDoalog = new ProgressDialog(UserDashBoard.this);
         progressDoalog.setMessage("Loading....");
         progressDoalog.setTitle("Please wait");
         progressDoalog.setCancelable(true);
@@ -111,8 +122,8 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
                         }
                     }
                 }, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST));
-
-        binding.endride.setOnClickListener(new View.OnClickListener() {
+        endride=findViewById(R.id.endride);
+        endride.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SharedPreferences sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
@@ -123,31 +134,92 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
                 editor.putString("address", "");
                 editor.putString("devId", "");
                 editor.commit();
-                Intent i = new Intent(ChooseActivity.this, HomeActivity.class);
+                Intent i = new Intent(UserDashBoard.this, HomeActivity.class);
                 startActivity(i); // invoke the SecondActivity.
                 finish();
             }
         });
-        binding.address.setOnClickListener(new View.OnClickListener() {
+       address=findViewById(R.id.address);
+        address.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(ChooseActivity.this, UpdateAddress.class);
+                Intent i = new Intent(UserDashBoard.this, UpdateAddress.class);
                 startActivity(i); // invoke the SecondActivity.
                 finish();
             }
         });
+//        DrawerLayout drawer = binding.drawerLayout;
+//        NavigationView navigationView = binding.navView;
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+//        mAppBarConfiguration = new AppBarConfiguration.Builder(
+//                R.id.nav_home)
+//                .setOpenableLayout(drawer)
+//                .build();
+//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_user_dash_board);
+//        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+//        NavigationUI.setupWithNavController(navigationView, navController);
+       // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, findViewById(R.id.toolbar), R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View hView = navigationView.getHeaderView(0);
+        TextView nav_user = (TextView) hView.findViewById(R.id.name);
+        SharedPreferences sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
+
+        nav_user.setText(sp.getString("name",""));
+        navigationView.setNavigationItemSelectedListener(this);
+
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+//
+        if (id == R.id.nav_gallery) {
+            startActivity(new Intent(getApplicationContext(), UpdateAddress.class));
+            finish();
+        }
+        if (id == R.id.nav_hosp) {
+            startActivity(new Intent(getApplicationContext(), UserAllHospital.class));
+            finish();
+        }
+        else if (id == R.id.nav_slideshow) {
+            SharedPreferences sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putString("utype", "");
+            editor.putString("name", "");
+            editor.putString("mobile", "");
+            editor.putString("address", "");
+            editor.putString("devId", "");
+            editor.commit();
+            Intent i = new Intent(UserDashBoard.this, HomeActivity.class);
+            startActivity(i); // invoke the SecondActivity.
+            finish();
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+ //   @Override
+//    public boolean onSupportNavigateUp() {
+//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_user_dash_board);
+//        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+//                || super.onSupportNavigateUp();
+  //  }
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -285,30 +357,16 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.item1:
-
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            finish();
+            moveTaskToBack(true);
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        finish();
-        moveTaskToBack(true);
-
-    }
 
     private void showData() {
 
@@ -348,7 +406,7 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
                                         LatLng latLng = new LatLng(Double.parseDouble(Hlist.get(i).getHlatitude()), Double.parseDouble(Hlist.get(i).getHlongitude()));
                                         CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(12).build();
                                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                                      //  mMap.clear();
+                                        //  mMap.clear();
 
                                         mMap.addMarker(new MarkerOptions()
                                                 .position(latLng)
@@ -359,7 +417,7 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
                                     }
                                     mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                                         public void onInfoWindowClick(Marker marker) {
-                                            SharedPreferences sd=getSharedPreferences("hospital",Context.MODE_PRIVATE);
+                                            SharedPreferences sd=getSharedPreferences("hospital", Context.MODE_PRIVATE);
                                             SharedPreferences.Editor ed=sd.edit();
                                             ed.putString("hname",marker.getTitle());
                                             ed.commit();

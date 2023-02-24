@@ -26,6 +26,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.example.eas.Dashboard.UserDashBoard;
 import com.example.eas.databinding.ActivityHomeBinding;
 import com.example.eas.model.UserModel;
 import com.example.eas.settings.LocationMonitoringService;
@@ -163,7 +164,7 @@ public class HomeActivity extends AppCompatActivity {
                                 progressDoalog.dismiss();
                                 if(queryDocumentSnapshots.getDocuments().get(0).getString("utype").equals("User")) {
                                     Toast.makeText(HomeActivity.this, "Login successfull as user", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(HomeActivity.this, ChooseActivity.class));
+                                    startActivity(new Intent(HomeActivity.this, UserDashBoard.class));
                                     finish();
                                 }
                                 else if(queryDocumentSnapshots.getDocuments().get(0).getString("utype").equals("Admin")) {
@@ -232,7 +233,7 @@ public class HomeActivity extends AppCompatActivity {
 
         sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
         if (sp.getString("utype", "").equals("User")) {
-            startActivity(new Intent(HomeActivity.this, ChooseActivity.class));
+            startActivity(new Intent(HomeActivity.this, UserDashBoard.class));
             finish();
         }
 

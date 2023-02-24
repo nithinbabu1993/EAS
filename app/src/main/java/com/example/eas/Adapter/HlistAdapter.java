@@ -2,8 +2,10 @@ package com.example.eas.Adapter;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,28 +49,34 @@ public class HlistAdapter extends RecyclerView.Adapter<HlistAdapter.MyviewHolder
         holder.hname.setText(dm.getName());
         holder.haddress.setText(dm.getAddress());
         holder.hphone.setText(dm.getPhone());
+
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder alertbox = new AlertDialog.Builder(view.getRootView().getContext());
-                alertbox.setMessage("Do you really wants to Delete this Hospital?");
-                alertbox.setTitle("Delete!!");
+                SharedPreferences sp =  view.getRootView().getContext().getSharedPreferences("LoginData", Context.MODE_PRIVATE);
+                if (sp.getString("utype", "").equals("User")) {
 
-                alertbox.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        deleteDepartment(dm.getDevId(), view, holder.getAdapterPosition());
+                }else {
+                    AlertDialog.Builder alertbox = new AlertDialog.Builder(view.getRootView().getContext());
+                    alertbox.setMessage("Do you really wants to Delete this Hospital?");
+                    alertbox.setTitle("Delete!!");
 
-                    }
-                });
-                alertbox.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                    alertbox.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            deleteDepartment(dm.getDevId(), view, holder.getAdapterPosition());
 
-                alertbox.show();
+                        }
+                    });
+                    alertbox.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    alertbox.show();
+                }
             }
         });
     }
