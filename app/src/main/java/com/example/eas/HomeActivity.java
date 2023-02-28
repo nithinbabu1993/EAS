@@ -1,8 +1,13 @@
 package com.example.eas;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CALL_PHONE;
+import static android.Manifest.permission.SEND_SMS;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
@@ -12,6 +17,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -53,13 +59,50 @@ public class HomeActivity extends AppCompatActivity {
     String People[] = {"Choose a Category", "User", "Admin", "Hospital", "Ambulance"};
     String item = "0";
     SharedPreferences sp;
+    private static final int PERMISSION_REQUEST_CODE = 200;
+
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_FINE_LOCATION);
+        int result1 = ContextCompat.checkSelfPermission(getApplicationContext(), CALL_PHONE);
+        int result2 = ContextCompat.checkSelfPermission(getApplicationContext(), SEND_SMS);
+        return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED && result2 == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION, CALL_PHONE, SEND_SMS}, PERMISSION_REQUEST_CODE);
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0) {
+
+                    boolean locationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean callphone = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    boolean sms = grantResults[2] == PackageManager.PERMISSION_GRANTED;
+
+                    if (locationAccepted && callphone && sms)
+                        Toast.makeText(this, "Permission Granted, Now you can access location data and sms,call phone.", Toast.LENGTH_SHORT).show();
+
+                    else {
+                        Toast.makeText(this, "Permission Denied, You cannot access location data and sms,call phone.", Toast.LENGTH_SHORT).show();
+                        showSettingsDialog();
+
+                    }
+                }
+                break;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-      //  requestPermission();
+        //  requestPermission();
         ArrayAdapter aa = new ArrayAdapter(this, android.R.layout.simple_spinner_item, People);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.spinner2.setAdapter(aa);
@@ -162,22 +205,19 @@ public class HomeActivity extends AppCompatActivity {
                                 editor.putString("devId", queryDocumentSnapshots.getDocuments().get(0).getString("devId"));
                                 editor.commit();
                                 progressDoalog.dismiss();
-                                if(queryDocumentSnapshots.getDocuments().get(0).getString("utype").equals("User")) {
+                                if (queryDocumentSnapshots.getDocuments().get(0).getString("utype").equals("User")) {
                                     Toast.makeText(HomeActivity.this, "Login successfull as user", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(HomeActivity.this, UserDashBoard.class));
                                     finish();
-                                }
-                                else if(queryDocumentSnapshots.getDocuments().get(0).getString("utype").equals("Admin")) {
+                                } else if (queryDocumentSnapshots.getDocuments().get(0).getString("utype").equals("Admin")) {
                                     Toast.makeText(HomeActivity.this, "Login successfull as admin", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(HomeActivity.this, AdminHome.class));
                                     finish();
-                                }
-                                else if(queryDocumentSnapshots.getDocuments().get(0).getString("utype").equals("Hospital")) {
+                                } else if (queryDocumentSnapshots.getDocuments().get(0).getString("utype").equals("Hospital")) {
                                     Toast.makeText(HomeActivity.this, "Login successfull as admin", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(HomeActivity.this, HospitalHome.class));
                                     finish();
-                                }
-                                else if(queryDocumentSnapshots.getDocuments().get(0).getString("utype").equals("Ambulance")) {
+                                } else if (queryDocumentSnapshots.getDocuments().get(0).getString("utype").equals("Ambulance")) {
                                     Toast.makeText(HomeActivity.this, "Login successfull as admin", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(HomeActivity.this, AdminHome.class));
                                     finish();
@@ -230,7 +270,11 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        if (!checkPermission()) {
+            requestPermission();
+        } else {
+            // Toast.makeText(this, "Permission already granted.", Toast.LENGTH_SHORT).show();
+        }
         sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
         if (sp.getString("utype", "").equals("User")) {
             startActivity(new Intent(HomeActivity.this, UserDashBoard.class));
@@ -238,47 +282,7 @@ public class HomeActivity extends AppCompatActivity {
         }
 
     }
-    public void requestPermission() {
 
-        //Multiple permission request
-        Dexter.withActivity(this)
-                .withPermissions(
-                        android.Manifest.permission.SEND_SMS,
-                        android.Manifest.permission.ACCESS_FINE_LOCATION,
-                        android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.CALL_PHONE
-                )
-                .withListener(new MultiplePermissionsListener() {
-                    @Override
-                    public void onPermissionsChecked(
-                            MultiplePermissionsReport report) {
-                        // check if all permissions are granted
-                        if (report.areAllPermissionsGranted()) {
-                            Toast.makeText(getApplicationContext(), "All permissions are granted!", Toast.LENGTH_SHORT).show();
-                        }
-                        // check for permanent denial of any permission
-                        if (report.isAnyPermissionPermanentlyDenied()) {
-                            // show alert dialog navigating to Settings
-                            showSettingsDialog();
-                        }
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-
-
-                }).
-                withErrorListener(new PermissionRequestErrorListener() {
-                    @Override
-                    public void onError(DexterError error) {
-                        Toast.makeText(HomeActivity.this, "Error occurred! ", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .onSameThread()
-                .check();
-    }
     private void showSettingsDialog() {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         builder.setTitle("Need Permissions");
@@ -316,7 +320,8 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Toast.makeText(HomeActivity.this, "Device Registered successfully", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getApplicationContext(),HomeActivity.class));finish();
+                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                        finish();
                     }
                 }).
                 addOnFailureListener(new OnFailureListener() {
