@@ -11,6 +11,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -32,6 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.eas.Adapter.BookingAdapter;
 import com.example.eas.databinding.ActivityChooseBinding;
 import com.example.eas.model.Bookingmodel;
 import com.example.eas.model.Hospitalmodel;
@@ -66,6 +68,7 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
     private GoogleMap mMap;
     ActivityChooseBinding binding;
     List<Hospitalmodel> Hlist = new ArrayList();
+    List<Bookingmodel> BookingList = new ArrayList();
     private int STORAGE_PERMISSION_CODE = 23;
     boolean somePermissionsForeverDenied = false;
     String latitude, longitude;
@@ -139,6 +142,8 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
                 finish();
             }
         });
+        LinearLayoutManager ll=new LinearLayoutManager(this);
+        binding.rvBookings.setLayoutManager(ll);
     }
 
 
@@ -196,95 +201,7 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
     }
 
     //We are calling this method to check the permission status
-    private boolean isReadStorageAllowed() {
-        //Getting the permission status
-        int result = ContextCompat.checkSelfPermission(this, CALL_PHONE);
 
-        //If permission is granted returning true
-        if (result == PackageManager.PERMISSION_GRANTED)
-            return true;
-
-        //If permission is not granted returning false
-        return false;
-    }
-
-    //Requesting permission
-    private void requestStoragePermission() {
-
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, CALL_PHONE)) {
-            //If the user has denied the permission previously your code will come to this block
-            //Here you can explain why you need this permission
-            //Explain here why you need this permission
-        }
-
-        //And finally ask for the permission
-        ActivityCompat.requestPermissions(this, new String[]{CALL_PHONE}, STORAGE_PERMISSION_CODE);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (permissions.length == 0) {
-            return;
-        }
-        boolean allPermissionsGranted = true;
-        if (grantResults.length > 0) {
-            for (int grantResult : grantResults) {
-                if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                    allPermissionsGranted = false;
-                    break;
-                }
-            }
-        }
-        if (!allPermissionsGranted) {
-
-            for (String permission : permissions) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-                    //denied
-                    Log.e("denied", permission);
-                    // requestStoragePermission();
-                } else {
-                    if (ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
-                        //allowed
-                        Log.e("allowed", permission);
-                    } else {
-                        //set to never ask again
-                        Log.e("set to never ask again", permission);
-                        somePermissionsForeverDenied = true;
-                    }
-                }
-            }
-            if (somePermissionsForeverDenied) {
-                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-                alertDialogBuilder.setTitle("Permissions Required")
-                        .setMessage("You have forcefully denied some of the required permissions " +
-                                "for this action. Please open settings, go to permissions and allow them.")
-                        .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                        Uri.fromParts("package", getPackageName(), null));
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        })
-                        .setCancelable(false)
-                        .create()
-                        .show();
-            }
-
-        } else {
-            switch (requestCode) {
-                //act according to the request code used while requesting the permission(s).
-            }
-        }
-    }
 
 
     @Override
@@ -305,6 +222,7 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
                 return super.onOptionsItemSelected(item);
         }
     }
+
 
     @Override
     public void onBackPressed() {
@@ -374,6 +292,57 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
                             } catch (Exception e) {
                             }
 
+                        }
+                        progressDoalog.dismiss();
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
+    private void MyBookings() {
+        SharedPreferences sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
+
+        Log.d("##", sp.getString("docId",""));
+        BookingList.clear();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("Booking").whereEqualTo("uid", sp.getString("docId",""))
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                        int i;
+                        for (i = 0; i < queryDocumentSnapshots.getDocuments().size(); i++) {
+
+                            BookingList.add(new Bookingmodel(
+                                    queryDocumentSnapshots.getDocuments().get(i).getId(),
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("ambulanceId"),
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("hospitalId"),
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("uname"),
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("uaddress"),
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("uphone"),
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("ulatitude"),
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("ulongitude"),
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("ambNo"),
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("driverName"),
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("driverPhone"),
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("bdate"),
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("dlatitude"),
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("dlongitude")
+                                    ));
+                        }
+                        if (BookingList.isEmpty()) {
+                            Toast.makeText(ChooseActivity.this, "No Bookings Found", Toast.LENGTH_SHORT).show();
+                        } else {
+                            BookingAdapter aa= new BookingAdapter();
+                            aa.bookingList=BookingList;
+                            binding.rvBookings.setAdapter(aa);
                         }
                         progressDoalog.dismiss();
 

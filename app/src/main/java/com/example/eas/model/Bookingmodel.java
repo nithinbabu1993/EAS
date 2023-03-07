@@ -2,9 +2,9 @@ package com.example.eas.model;
 
 public class Bookingmodel {
      public static String latitude=null,longitude=null;
-    String uid,ambulanceId,hospitalId,uname,uaddress,uphone,ulatitude,ulongitude,ambNo,driverName,driverPhone,bdate;
+    String uid,ambulanceId,hospitalId,uname,uaddress,uphone,ulatitude,ulongitude,ambNo,driverName,driverPhone,bdate,dlatitude,dlongitude;
 
-    public Bookingmodel(String uid, String ambulanceId, String hospitalId, String uname, String uaddress, String uphone, String ulatitude, String ulongitude, String ambNo, String driverName, String driverPhone, String bdate) {
+    public Bookingmodel(String uid, String ambulanceId, String hospitalId, String uname, String uaddress, String uphone, String ulatitude, String ulongitude, String ambNo, String driverName, String driverPhone, String bdate, String dlatitude, String dlongitude) {
         this.uid = uid;
         this.ambulanceId = ambulanceId;
         this.hospitalId = hospitalId;
@@ -17,14 +17,24 @@ public class Bookingmodel {
         this.driverName = driverName;
         this.driverPhone = driverPhone;
         this.bdate = bdate;
+        this.dlatitude = dlatitude;
+        this.dlongitude = dlongitude;
     }
 
-    public String getBdate() {
-        return bdate;
+    public static String getLatitude() {
+        return latitude;
     }
 
-    public void setBdate(String bdate) {
-        this.bdate = bdate;
+    public static void setLatitude(String latitude) {
+        Bookingmodel.latitude = latitude;
+    }
+
+    public static String getLongitude() {
+        return longitude;
+    }
+
+    public static void setLongitude(String longitude) {
+        Bookingmodel.longitude = longitude;
     }
 
     public String getUid() {
@@ -115,17 +125,27 @@ public class Bookingmodel {
         this.driverPhone = driverPhone;
     }
 
-    public Bookingmodel(String uid, String ambulanceId, String hospitalId, String uname, String uaddress, String uphone, String ulatitude, String ulongitude, String ambNo, String driverName, String driverPhone) {
-        this.uid = uid;
-        this.ambulanceId = ambulanceId;
-        this.hospitalId = hospitalId;
-        this.uname = uname;
-        this.uaddress = uaddress;
-        this.uphone = uphone;
-        this.ulatitude = ulatitude;
-        this.ulongitude = ulongitude;
-        this.ambNo = ambNo;
-        this.driverName = driverName;
-        this.driverPhone = driverPhone;
+    public String getBdate() {
+        return bdate;
+    }
+
+    public void setBdate(String bdate) {
+        this.bdate = bdate;
+    }
+
+    public String getDlatitude() {
+        return dlatitude;
+    }
+
+    public void setDlatitude(String dlatitude) {
+        this.dlatitude = dlatitude;
+    }
+
+    public String getDlongitude() {
+        return dlongitude;
+    }
+
+    public void setDlongitude(String dlongitude) {
+        this.dlongitude = dlongitude;
     }
 }

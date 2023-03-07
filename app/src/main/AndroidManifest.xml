@@ -25,7 +25,8 @@
             android:exported="false" />
         <activity
             android:name=".Dashboard.UserAllHospital"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".Dashboard.UserDashBoard"
             android:exported="false"

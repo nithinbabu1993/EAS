@@ -17,8 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eas.AddAmbulance;
-import com.example.eas.ChooseActivity;
-import com.example.eas.NewHospital;
+import com.example.eas.Dashboard.UserDashBoard;
 import com.example.eas.databinding.LayoutHospitalBinding;
 import com.example.eas.model.AmbulanceModel;
 import com.example.eas.model.Bookingmodel;
@@ -36,12 +35,13 @@ import java.util.Locale;
 
 public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.MyviewHolder> {
     public List<AmbulanceModel> HospList;
+    Boolean b1 = false;
     LayoutHospitalBinding binding;
-    public String uid="";
-    public  String HospitalId="";
-    public String uname="";
-    public String uaddress="";
-    public String uphone="";
+    public String uid = "";
+    public String HospitalId = "";
+    public String uname = "";
+    public String uaddress = "";
+    public String uphone = "";
 
 
     @NonNull
@@ -71,27 +71,27 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.Myvi
             public void onClick(View view) {
                 SharedPreferences sp = view.getRootView().getContext().getSharedPreferences("LoginData", Context.MODE_PRIVATE);
                 if (sp.getString("utype", "").equals("Hospital")) {
-                AlertDialog.Builder alertbox = new AlertDialog.Builder(view.getRootView().getContext());
-                alertbox.setMessage("Do you really wants to Delete this Ambulance?");
-                alertbox.setTitle("Delete!!");
+                    AlertDialog.Builder alertbox = new AlertDialog.Builder(view.getRootView().getContext());
+                    alertbox.setMessage("Do you really wants to Delete this Ambulance?");
+                    alertbox.setTitle("Delete!!");
 
-                alertbox.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    alertbox.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
 
                             deleteDepartment(dm.getDevId(), view, holder.getAdapterPosition());
 
-                    }
-                });
-                alertbox.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                        }
+                    });
+                    alertbox.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
 
-                alertbox.show();
-                }else{
+                    alertbox.show();
+                } else {
                     AlertDialog.Builder alertbox = new AlertDialog.Builder(view.getRootView().getContext());
                     alertbox.setMessage("Do you  wants to book this Ambulance?");
                     alertbox.setTitle("book!!");
@@ -99,8 +99,8 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.Myvi
                     alertbox.setPositiveButton("yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                          CheckBookingAvailability(dm.getDevId(), view, holder.getAdapterPosition(),dm);
 
-                            bookAmbulance(dm.getDevId(), view, holder.getAdapterPosition(),dm.getAname(),dm.getName(),dm.getPhone());
 
                         }
                     });
@@ -168,7 +168,14 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.Myvi
         progressDoalog.dismiss();
 
     }
+
     private void bookAmbulance(String ambulanceID, View view, int adapterPosition, String aname, String dname, String dphone) {
+        final ProgressDialog progressDoalog = new ProgressDialog(view.getRootView().getContext());
+        progressDoalog.setMessage("Checking....");
+        progressDoalog.setTitle("Please wait");
+        progressDoalog.setCancelable(false);
+        progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDoalog.show();
         Date c = Calendar.getInstance().getTime();
         System.out.println("Current time => " + c);
 
@@ -177,18 +184,18 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.Myvi
         Bookingmodel obj = new Bookingmodel(uid,
                 ambulanceID,
                 HospitalId,
-               uname,
+                uname,
                 uaddress,
                 uphone,
-                Bookingmodel.latitude,Bookingmodel.longitude,
-                aname,dname,dphone,formattedDate);
+                Bookingmodel.latitude, Bookingmodel.longitude,
+                aname, dname, dphone, formattedDate,"","");
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Booking").add(obj).
                 addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Toast.makeText(view.getRootView().getContext(), "Ambulance booked successfully", Toast.LENGTH_SHORT).show();
-                        Intent i = new Intent(view.getRootView().getContext(), ChooseActivity.class);
+                        Intent i = new Intent(view.getRootView().getContext(), UserDashBoard.class);
                         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         view.getRootView().getContext().startActivity(i);
 
@@ -200,8 +207,10 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.Myvi
                         Toast.makeText(view.getRootView().getContext(), "Creation failed", Toast.LENGTH_SHORT).show();
                     }
                 });
+        progressDoalog.dismiss();
     }
-    private void CheckBookingAvailability(View view) {
+
+    private void CheckBookingAvailability(String ambId, View view, int adapterPosition, AmbulanceModel dm) {
         Date c = Calendar.getInstance().getTime();
         System.out.println("Current time => " + c);
 
@@ -214,16 +223,19 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.Myvi
         progressDoalog.setCancelable(false);
         progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDoalog.show();
-        db.collection("User").whereEqualTo("devId","").get().
+        db.collection("Booking").whereEqualTo("bdate", formattedDate)
+                .whereEqualTo("ambulanceId", ambId)
+                .whereEqualTo("uid", uid).get().
                 addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         if (queryDocumentSnapshots.getDocuments().isEmpty()) {
-                            //bookAmbulance();
+                            bookAmbulance(dm.getDevId(), view, adapterPosition, dm.getAname(), dm.getName(), dm.getPhone());
                             progressDoalog.dismiss();
+
                         } else {
                             progressDoalog.dismiss();
-                        //    Toast.makeText(NewHospital.this, "This Login pin Already registered", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(view.getRootView().getContext(), "This Ambulance Already booked for todays date", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }).
@@ -231,9 +243,10 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.Myvi
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         //userRegistration();
-                       // Toast.makeText(NewHospital.this, "Creation failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(view.getRootView().getContext(), "Creation failed", Toast.LENGTH_SHORT).show();
                     }
                 });
+
     }
 }
 
