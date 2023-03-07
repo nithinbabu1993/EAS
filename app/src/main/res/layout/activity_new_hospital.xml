@@ -51,7 +51,7 @@
         android:textColorHint="@color/black"
         android:textColor="@color/black"
         android:layout_marginHorizontal="30dp"
-        android:focusable="false"
+        android:focusable="true"
         android:inputType="textPostalAddress"
         android:hint="Enter Hospital Address"/>
     <androidx.appcompat.widget.AppCompatEditText

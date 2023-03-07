@@ -99,7 +99,7 @@ String type,name,mob,address,utype;
         progressDoalog.setCancelable(true);
         progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDoalog.show();
-        db.collection("User").whereEqualTo("mobile", phone)
+        db.collection("User").whereEqualTo("phone", phone)
                 .whereEqualTo("utype",type)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {

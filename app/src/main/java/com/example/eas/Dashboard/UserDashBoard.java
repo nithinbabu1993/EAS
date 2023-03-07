@@ -235,6 +235,11 @@ FloatingActionButton address,endride;
             return;
         }
         mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setCompassEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mMap.getUiSettings().setRotateGesturesEnabled(false);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setZoomGesturesEnabled(true);
 
 //        navigate.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -397,37 +402,37 @@ FloatingActionButton address,endride;
                         } else {
                             try {
                                 for (i = 0; i < Hlist.size(); i++) {
-//                                    if (latitude != null && longitude != null) {
-//                                        float[] results = new float[1];
-//                                        Location.distanceBetween(parseDouble(latitude), parseDouble(longitude),
-//                                                parseDouble(Hlist.get(i).getHlatitude()), parseDouble(Hlist.get(i).getHlongitude()),
-//                                                results);
-//                                        float km = results[0] / 1000;
+                                    if (latitude != null && longitude != null) {
+                                        float[] results = new float[1];
+                                        Location.distanceBetween(parseDouble(latitude), parseDouble(longitude),
+                                                parseDouble(Hlist.get(i).getHlatitude()), parseDouble(Hlist.get(i).getHlongitude()),
+                                                results);
+                                        float km = results[0] / 1000;
                                         LatLng latLng = new LatLng(Double.parseDouble(Hlist.get(i).getHlatitude()), Double.parseDouble(Hlist.get(i).getHlongitude()));
                                         CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(12).build();
                                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                                         //  mMap.clear();
-
                                         mMap.addMarker(new MarkerOptions()
                                                 .position(latLng)
-                                                .title("Hospital Name-\t" + Hlist.get(i).getName() + ":"+Hlist.get(i).getAddress() +"\t:\t\tHospital Phone-"+Hlist.get(i).getPhone()+"Hospital ID:"+Hlist.get(i).getDevId())
+                                                .title("Hospital Name-\t" + Hlist.get(i).getName() + ":" + Hlist.get(i).getAddress() + "\t:\t\tHospital Phone-" + Hlist.get(i).getPhone() + "Distance from you:" + km + "Hospital ID:" + Hlist.get(i).getDevId())
                                                 .icon(BitmapDescriptorFactory
                                                         .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))).showInfoWindow();
 
 
-                                    mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                                        public void onInfoWindowClick(Marker marker) {
-                                            SharedPreferences sd=getSharedPreferences("hospital", Context.MODE_PRIVATE);
-                                            SharedPreferences.Editor ed=sd.edit();
-                                            ed.putString("hname",marker.getTitle());
-                                            ed.commit();
-                                            startActivity(new Intent(getApplicationContext(), ShowAmbulance.class));
-                                            finish();
-                                        }
-                                    });
+                                        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                                            public void onInfoWindowClick(Marker marker) {
+                                                SharedPreferences sd = getSharedPreferences("hospital", Context.MODE_PRIVATE);
+                                                SharedPreferences.Editor ed = sd.edit();
+                                                ed.putString("hname", marker.getTitle());
+                                                ed.commit();
+                                                startActivity(new Intent(getApplicationContext(), ShowAmbulance.class));
+                                                finish();
+                                            }
+                                        });
+                                    }
                                 }
-                            } catch (Exception e) {
-                            }
+                                } catch(Exception e){
+                                }
 
                         }
                         progressDoalog.dismiss();
