@@ -121,6 +121,7 @@ public class HomeActivity extends AppCompatActivity {
                 item = binding.spinner2.getSelectedItem().toString();
                 if (item.equals("Admin") || item.equals("Hospital") || item.equals("Ambulance")) {
                     binding.loginpin.setVisibility(View.VISIBLE);
+                    binding.forgotpin.setVisibility(View.VISIBLE);
                     binding.regDevId.setVisibility(View.GONE);
                     binding.textView2.setVisibility(View.GONE);
                     binding.img.setVisibility(View.GONE);
@@ -128,6 +129,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 } else {
                     binding.textView2.setVisibility(View.VISIBLE);
+                    binding.forgotpin.setVisibility(View.GONE);
                     binding.regDevId.setVisibility(View.VISIBLE);
                     binding.loginpin.setVisibility(View.GONE);
                     binding.img.setVisibility(View.VISIBLE);
@@ -137,6 +139,19 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 Toast.makeText(HomeActivity.this, "please select a category", Toast.LENGTH_SHORT).show();
+            }
+        });
+        binding.forgotpin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(item.equals("Choose a Category")){
+                    Toast.makeText(HomeActivity.this, "choose a User", Toast.LENGTH_SHORT).show();
+                }else {
+                    Bundle b = new Bundle();
+                    b.putString("type", item);
+                    startActivity(new Intent(getApplicationContext(), ForgotPinActivity.class).putExtras(b));
+                    finish();
+                }
             }
         });
         binding.regDevId.setOnClickListener(new View.OnClickListener() {

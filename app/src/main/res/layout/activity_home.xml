@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAA8A8"
+    android:background="#A0DCF8"
     tools:context=".HomeActivity">
 
     <ImageView
@@ -77,7 +77,24 @@
         app:layout_constraintHorizontal_bias="0.072"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/regDevId" />
-<androidx.appcompat.widget.AppCompatImageView
+
+<androidx.appcompat.widget.AppCompatTextView
+    android:id="@+id/forgotpin"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="30dp"
+    android:text="Forgot Pin"
+    android:visibility="gone"
+    tools:visibility="visible"
+    android:textStyle="bold"
+    android:layout_marginTop="20dp"
+    android:gravity="end"
+    android:textSize="15dp"
+    android:textColor="@color/primary"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/loginpin"/>
+    <androidx.appcompat.widget.AppCompatImageView
     android:layout_width="100dp"
     android:id="@+id/imgambu"
     app:layout_constraintStart_toStartOf="parent"
@@ -110,4 +127,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/labellog" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

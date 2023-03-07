@@ -397,12 +397,12 @@ FloatingActionButton address,endride;
                         } else {
                             try {
                                 for (i = 0; i < Hlist.size(); i++) {
-                                    if (latitude != null && longitude != null) {
-                                        float[] results = new float[1];
-                                        Location.distanceBetween(parseDouble(latitude), parseDouble(longitude),
-                                                parseDouble(Hlist.get(i).getHlatitude()), parseDouble(Hlist.get(i).getHlongitude()),
-                                                results);
-                                        float km = results[0] / 1000;
+//                                    if (latitude != null && longitude != null) {
+//                                        float[] results = new float[1];
+//                                        Location.distanceBetween(parseDouble(latitude), parseDouble(longitude),
+//                                                parseDouble(Hlist.get(i).getHlatitude()), parseDouble(Hlist.get(i).getHlongitude()),
+//                                                results);
+//                                        float km = results[0] / 1000;
                                         LatLng latLng = new LatLng(Double.parseDouble(Hlist.get(i).getHlatitude()), Double.parseDouble(Hlist.get(i).getHlongitude()));
                                         CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(12).build();
                                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
@@ -410,11 +410,11 @@ FloatingActionButton address,endride;
 
                                         mMap.addMarker(new MarkerOptions()
                                                 .position(latLng)
-                                                .title("Hospital Name-\t" + Hlist.get(i).getName() + ":"+Hlist.get(i).getAddress() + "\t:\tDistance from you-" + km+"\t:\t\tHospital Phone-"+Hlist.get(i).getPhone()+"Hospital ID:"+Hlist.get(i).getDevId())
+                                                .title("Hospital Name-\t" + Hlist.get(i).getName() + ":"+Hlist.get(i).getAddress() +"\t:\t\tHospital Phone-"+Hlist.get(i).getPhone()+"Hospital ID:"+Hlist.get(i).getDevId())
                                                 .icon(BitmapDescriptorFactory
                                                         .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))).showInfoWindow();
 
-                                    }
+
                                     mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                                         public void onInfoWindowClick(Marker marker) {
                                             SharedPreferences sd=getSharedPreferences("hospital", Context.MODE_PRIVATE);
