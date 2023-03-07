@@ -70,7 +70,7 @@ public class HospitalInMap extends FragmentActivity implements OnMapReadyCallbac
         progressDoalog = new ProgressDialog(HospitalInMap.this);
         progressDoalog.setMessage("Loading....");
         progressDoalog.setTitle("Please wait");
-        progressDoalog.setCancelable(false);
+        progressDoalog.setCancelable(true);
         progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDoalog.show();
         LocalBroadcastManager.getInstance(this).registerReceiver(
@@ -128,7 +128,11 @@ public class HospitalInMap extends FragmentActivity implements OnMapReadyCallbac
             return;
         }
         mMap.setMyLocationEnabled(true);
-
+        mMap.getUiSettings().setCompassEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mMap.getUiSettings().setRotateGesturesEnabled(false);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setZoomGesturesEnabled(true);
 
     }
 

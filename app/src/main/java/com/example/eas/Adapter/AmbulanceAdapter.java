@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,19 +17,32 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eas.AddAmbulance;
-import com.example.eas.HospitalList;
+import com.example.eas.ChooseActivity;
+import com.example.eas.NewHospital;
 import com.example.eas.databinding.LayoutHospitalBinding;
 import com.example.eas.model.AmbulanceModel;
-import com.example.eas.model.Hospitalmodel;
+import com.example.eas.model.Bookingmodel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.MyviewHolder> {
     public List<AmbulanceModel> HospList;
     LayoutHospitalBinding binding;
+    public String uid="";
+    public  String HospitalId="";
+    public String uname="";
+    public String uaddress="";
+    public String uphone="";
+
 
     @NonNull
     @Override
@@ -80,7 +92,26 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.Myvi
 
                 alertbox.show();
                 }else{
+                    AlertDialog.Builder alertbox = new AlertDialog.Builder(view.getRootView().getContext());
+                    alertbox.setMessage("Do you  wants to book this Ambulance?");
+                    alertbox.setTitle("book!!");
 
+                    alertbox.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                            bookAmbulance(dm.getDevId(), view, holder.getAdapterPosition(),dm.getAname(),dm.getName(),dm.getPhone());
+
+                        }
+                    });
+                    alertbox.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    alertbox.show();
                 }
             }
         });
@@ -137,7 +168,73 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.Myvi
         progressDoalog.dismiss();
 
     }
+    private void bookAmbulance(String ambulanceID, View view, int adapterPosition, String aname, String dname, String dphone) {
+        Date c = Calendar.getInstance().getTime();
+        System.out.println("Current time => " + c);
 
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        String formattedDate = df.format(c);
+        Bookingmodel obj = new Bookingmodel(uid,
+                ambulanceID,
+                HospitalId,
+               uname,
+                uaddress,
+                uphone,
+                Bookingmodel.latitude,Bookingmodel.longitude,
+                aname,dname,dphone,formattedDate);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Booking").add(obj).
+                addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Toast.makeText(view.getRootView().getContext(), "Ambulance booked successfully", Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(view.getRootView().getContext(), ChooseActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        view.getRootView().getContext().startActivity(i);
+
+                    }
+                }).
+                addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(view.getRootView().getContext(), "Creation failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+    private void CheckBookingAvailability(View view) {
+        Date c = Calendar.getInstance().getTime();
+        System.out.println("Current time => " + c);
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        String formattedDate = df.format(c);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final ProgressDialog progressDoalog = new ProgressDialog(view.getRootView().getContext());
+        progressDoalog.setMessage("Checking....");
+        progressDoalog.setTitle("Please wait");
+        progressDoalog.setCancelable(false);
+        progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDoalog.show();
+        db.collection("User").whereEqualTo("devId","").get().
+                addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (queryDocumentSnapshots.getDocuments().isEmpty()) {
+                            //bookAmbulance();
+                            progressDoalog.dismiss();
+                        } else {
+                            progressDoalog.dismiss();
+                        //    Toast.makeText(NewHospital.this, "This Login pin Already registered", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).
+                addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //userRegistration();
+                       // Toast.makeText(NewHospital.this, "Creation failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 }
 
 

@@ -33,6 +33,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.eas.databinding.ActivityChooseBinding;
+import com.example.eas.model.Bookingmodel;
 import com.example.eas.model.Hospitalmodel;
 import com.example.eas.settings.GPSTracker;
 import com.example.eas.settings.LocationMonitoringService;
@@ -93,6 +94,8 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
                         longitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LONGITUDE);
                         //Toast.makeText(ChooseActivity.this, latitude + longitude + "", Toast.LENGTH_SHORT).show();
                         if (latitude != null && longitude != null) {
+                            Bookingmodel.latitude=latitude;
+                            Bookingmodel.longitude=longitude;
 //                            LatLng latLng = new LatLng(parseDouble(latitude), parseDouble(longitude));
 //                            CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(12).build();
 //                            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
