@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.eas.Dashboard.UserDashBoard;
 import com.example.eas.databinding.ActivityForgotPinBinding;
+import com.example.eas.model.Hospitalmodel;
 import com.example.eas.model.UserModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -30,7 +31,7 @@ public class ForgotPinActivity extends AppCompatActivity {
     FirebaseFirestore db;
     String Otp;
     SharedPreferences sp;
-String type,name,mob,address,utype;
+String type,name,mob,address,utype,hlat,hlon;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,6 +113,8 @@ String type,name,mob,address,utype;
                             mob=queryDocumentSnapshots.getDocuments().get(0).getString("phone");
                             address=queryDocumentSnapshots.getDocuments().get(0).getString("address");
                             utype=queryDocumentSnapshots.getDocuments().get(0).getString("utype");
+                            hlat=queryDocumentSnapshots.getDocuments().get(0).getString("hlatitude");
+                            hlon=queryDocumentSnapshots.getDocuments().get(0).getString("hlongitude");
                             try {
                                 Random rand = new Random();
                                 Otp = String.format("%04d", rand.nextInt(100000));
@@ -145,8 +148,8 @@ String type,name,mob,address,utype;
         progressDoalog.setCancelable(true);
         progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDoalog.show();
-        UserModel obj = new UserModel(binding.tvnewpin.getText().toString(), name, mob,
-               address, utype);
+        Hospitalmodel obj = new Hospitalmodel(binding.tvnewpin.getText().toString(), name, mob,
+               address, utype,hlat,hlat);
         db.collection("User").document(type).set(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {

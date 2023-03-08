@@ -48,12 +48,40 @@ public class UpdateAddress extends AppCompatActivity {
                 } else if (binding.uaddress.getText().toString().isEmpty()) {
                     binding.uphone.setError("Please enter a valid address");
                 } else {
-                    updateAddress();
+                    checkmforloginpinAvailability();
                 }
             }
         });
     }
-
+    private void checkmforloginpinAvailability() {
+        final ProgressDialog progressDoalog = new ProgressDialog(this);
+        progressDoalog.setMessage("Checking....");
+        progressDoalog.setTitle("Please wait");
+        progressDoalog.setCancelable(false);
+        progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDoalog.show();
+        db.collection("User").
+                whereEqualTo("phone", binding.uphone.getText().toString()).get().
+                addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (queryDocumentSnapshots.getDocuments().isEmpty()) {
+                            updateAddress();
+                            progressDoalog.dismiss();
+                        } else {
+                            progressDoalog.dismiss();
+                            Toast.makeText(UpdateAddress.this, "This Phone number Already registered", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).
+                addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //userRegistration();
+                        Toast.makeText(UpdateAddress.this, "Creation failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
     private void updateAddress() {
         final ProgressDialog progressDoalog = new ProgressDialog(this);
         progressDoalog.setMessage("Checking....");

@@ -82,7 +82,9 @@ public class NewHospital extends FragmentActivity implements OnMapReadyCallback 
         progressDoalog.setCancelable(false);
         progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDoalog.show();
-        db.collection("User").whereEqualTo("devId", binding.hpin.getText().toString()).get().
+        db.collection("User").
+                whereEqualTo("devId", binding.hpin.getText().toString()).
+                whereEqualTo("phone", binding.hphone.getText().toString()).get().
                 addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -91,7 +93,7 @@ public class NewHospital extends FragmentActivity implements OnMapReadyCallback 
                             progressDoalog.dismiss();
                         } else {
                             progressDoalog.dismiss();
-                            Toast.makeText(NewHospital.this, "This Login pin Already registered", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(NewHospital.this, "This Login pin/Phone number Already registered", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }).

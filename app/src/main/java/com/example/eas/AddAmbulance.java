@@ -62,7 +62,7 @@ public class AddAmbulance extends AppCompatActivity {
                     binding.aname.setError("Enter Ambulance loginpin");
                 }
                 else {
-                    addAmbulance();
+                    checkmforloginpinAvailability();
                 }
             }
         });
@@ -71,6 +71,36 @@ public class AddAmbulance extends AppCompatActivity {
     public void onBackPressed() {
         startActivity(new Intent(AddAmbulance.this, HospitalHome.class));
         finish();
+    }
+    private void checkmforloginpinAvailability() {
+        final ProgressDialog progressDoalog = new ProgressDialog(this);
+        progressDoalog.setMessage("Checking....");
+        progressDoalog.setTitle("Please wait");
+        progressDoalog.setCancelable(false);
+        progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDoalog.show();
+        db.collection("User").
+                whereEqualTo("devId", binding.logpin.getText().toString()).
+                whereEqualTo("phone", binding.dphone.getText().toString()).get().
+                addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (queryDocumentSnapshots.getDocuments().isEmpty()) {
+                            addAmbulance();
+                            progressDoalog.dismiss();
+                        } else {
+                            progressDoalog.dismiss();
+                            Toast.makeText(AddAmbulance.this, "This Phone number/pin Already registered", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).
+                addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //userRegistration();
+                        Toast.makeText(AddAmbulance.this, "Creation failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
     private void addAmbulance() {
         AmbulanceModel obj = new AmbulanceModel(binding.aname.getText().toString(), binding.dname.getText().toString(), binding.dphone.getText().toString(), sp.getString("docId", ""), "Ambulance",binding.logpin.getText().toString());
