@@ -145,6 +145,32 @@
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/lbl_pPhone"
         app:layout_constraintTop_toBottomOf="@+id/lbl_pPhone" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/lbl_dest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/din_medium"
+        android:layout_marginTop="16dp"
+        android:text="Patient Address        : "
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/lbl_hname"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_hname" />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/din_medium"
+        android:layout_marginTop="16dp"
+        android:text="start "
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="10dp"
+        android:background="@drawable/bg_bordered_sky_blue"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/lbl_dest"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_dest" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvPatientAddress"
@@ -216,6 +242,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/lbl_hname"
         app:layout_constraintTop_toTopOf="@id/lbl_hname" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvuaddress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/din_medium"
+        android:text="ffff"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/lbl_dest"
+        app:layout_constraintTop_toTopOf="@id/lbl_dest" />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnStop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/din_medium"
+        android:visibility="gone"
+        android:layout_marginTop="16dp"
+        android:text="stop "
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="10dp"
+        android:background="@drawable/bg_bordered_sky_blue"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btnStart"
+        app:layout_constraintTop_toBottomOf="@id/tvuaddress" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

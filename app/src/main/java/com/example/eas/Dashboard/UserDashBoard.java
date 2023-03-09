@@ -249,11 +249,7 @@ FloatingActionButton address,endride;
         super.onResume();
         MyBookings();
     }
-    private void locateLocation(String issue, View view) {
-        Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(issue));
-        intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-        startActivity(intent);
-    }
+
     private void MyBookings() {
         SharedPreferences sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
 

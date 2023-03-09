@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +59,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.MyviewHo
         holder.pname.setText(dm.getUname());
         holder.pphone.setText(dm.getUphone());
         holder.hospname.setText(dm.getHname());
+        holder.uaddr.setText(dm.getUaddress());
         if(dm.getDlatitude()!="" && dm.getDlongitude()!=""){
             holder.dlatlang.setText("Ambulance own its Way");
 
@@ -65,16 +67,33 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.MyviewHo
             holder.dlatlang.setText("Ambulance not Started");
 
         }
+        SharedPreferences sp = holder.itemView.getContext().getSharedPreferences("LoginData", Context.MODE_PRIVATE);
+        if (sp.getString("utype", "").equals("Ambulance")){
+            holder.btnstart.setVisibility(View.VISIBLE);
+            holder.btnstop.setVisibility(View.VISIBLE);
+            holder.btnstart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(v.getContext(), "coming soon", Toast.LENGTH_SHORT).show();
+                }
+            });
+            holder.btnstop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(v.getContext(), "coming soon", Toast.LENGTH_SHORT).show();
 
+                }
+            });
+        }
 
-        holder.root.setOnClickListener(new View.OnClickListener() {
+            holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 SharedPreferences sp = view.getRootView().getContext().getSharedPreferences("LoginData", Context.MODE_PRIVATE);
                 if (sp.getString("utype", "").equals("User")) {
                     AlertDialog.Builder alertbox = new AlertDialog.Builder(view.getRootView().getContext());
-                    alertbox.setMessage("Do you really wants to Delete this Booking?");
-                    alertbox.setTitle("Delete!!");
+                    alertbox.setMessage("What to do?");
+                    alertbox.setTitle("Booking!!");
 
                     alertbox.setPositiveButton("cancel booking", new DialogInterface.OnClickListener() {
                         @Override
@@ -100,9 +119,44 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.MyviewHo
                         }
                     });
                     alertbox.show();
-                } else {
+                } else  if (sp.getString("utype", "").equals("Ambulance")) {
+                    AlertDialog.Builder alertbox = new AlertDialog.Builder(view.getRootView().getContext());
+                    alertbox.setMessage("What to do??");
+                    alertbox.setTitle("Booking!!");
 
+                    alertbox.setPositiveButton("cancel booking", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            deleteDepartment(dm.getUid(), view, holder.getAdapterPosition());
+
+                        }
+                    });
+                    alertbox.setNegativeButton("call Customer", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(Intent.ACTION_DIAL);
+                            intent.setData(Uri.parse("tel:" + dm.getUphone()));
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            view.getRootView().getContext().startActivity(intent);
+                            dialog.dismiss();
+                        }
+                    });
+                    alertbox.setNeutralButton("Locate Customer", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (dm.getUlatitude() != "" && dm.getUlongitude() != "") {
+                                String issue = "http://maps.google.com/maps?q=loc:" + dm.getUlatitude() + "," + dm.getUlongitude() + " (" + dm.getUname() + ")";
+                                locateLocation(issue, view);
+                            } else {
+                                Toast.makeText(view.getRootView().getContext(), "location not found", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
+                    alertbox.show();
                 }
+
+
             }
         });
     }
@@ -113,12 +167,16 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.MyviewHo
     }
 
     public class MyviewHolder extends RecyclerView.ViewHolder {
-        TextView hname, haddress, hphone, dlatlang,pname,pphone,hospname;
+        TextView hname, haddress, hphone, dlatlang,pname,pphone,hospname,uaddr;
+        Button btnstart,btnstop;
         ConstraintLayout root;
         ImageView ddelete;
 
         public MyviewHolder(@NonNull LayoutBookingBinding binding) {
             super(binding.getRoot());
+            btnstart = binding.btnStart;
+            uaddr = binding.tvuaddress;
+            btnstop = binding.btnStop;
             hname = binding.tvPatientName;
             hospname = binding.tvHname;
             dlatlang = binding.tvloc;
@@ -160,7 +218,12 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.MyviewHo
         progressDoalog.dismiss();
 
     }
-
+    private void locateLocation(String issue, View view) {
+        Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(issue));
+        intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+       intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        view.getRootView().getContext().startActivity(intent);
+    }
 }
 
 

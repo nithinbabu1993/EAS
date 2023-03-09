@@ -32,6 +32,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.example.eas.Ambulance.AmbulanceHome;
 import com.example.eas.Dashboard.UserDashBoard;
 import com.example.eas.databinding.ActivityHomeBinding;
 import com.example.eas.model.UserModel;
@@ -234,7 +235,7 @@ public class HomeActivity extends AppCompatActivity {
                                     finish();
                                 } else if (queryDocumentSnapshots.getDocuments().get(0).getString("utype").equals("Ambulance")) {
                                     Toast.makeText(HomeActivity.this, "Login successfull as ambulance", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(HomeActivity.this, AdminHome.class));
+                                    startActivity(new Intent(HomeActivity.this, AmbulanceHome.class));
                                     finish();
                                 }
                             }
