@@ -18,6 +18,7 @@ import com.example.eas.Adapter.AmbulanceAdapter;
 import com.example.eas.Dashboard.UserDashBoard;
 import com.example.eas.databinding.ActivityShowAmbulanceBinding;
 import com.example.eas.model.AmbulanceModel;
+import com.example.eas.model.Bookingmodel;
 import com.example.eas.model.Hospitalmodel;
 import com.example.eas.settings.LocationMonitoringService;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -38,15 +39,30 @@ public class ShowAmbulance extends AppCompatActivity {
     AmbulanceAdapter adapter = new AmbulanceAdapter();
     List<AmbulanceModel> Hlist = new ArrayList();
     ProgressDialog progressDoalog;
-    String val[]=new String[100];
+    String val[] = new String[100];
+    SharedPreferences sd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityShowAmbulanceBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        SharedPreferences sd = getSharedPreferences("hospital", Context.MODE_PRIVATE);
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        latitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LATITUDE);
+                        longitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LONGITUDE);
+                        //Toast.makeText(ChooseActivity.this, latitude + longitude + "", Toast.LENGTH_SHORT).show();
+                        if (latitude != null && longitude != null) {
+                            Bookingmodel.latitude = latitude;
+                            Bookingmodel.longitude = longitude;
+                        }
+                    }
+                }, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST));
+
+         sd = getSharedPreferences("hospital", Context.MODE_PRIVATE);
         binding.address.setText(sd.getString("hname", ""));
-         val = sd.getString("hname", "").trim().split(":");
+        val = sd.getString("hname", "").trim().split(":");
         binding.rvAmbulance.setLayoutManager(new LinearLayoutManager(this));
         progressDoalog = new ProgressDialog(ShowAmbulance.this);
         progressDoalog.setMessage("Adding Data....");
@@ -54,7 +70,12 @@ public class ShowAmbulance extends AppCompatActivity {
         progressDoalog.setCancelable(false);
         progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDoalog.show();
-        showData(val[6]);
+        if(sd.getString("from","").equals("Adapter")) {
+            showData(sd.getString("hid",""));
+        }
+        else{
+            showData(val[7]);
+        }
 
     }
 
@@ -96,7 +117,14 @@ public class ShowAmbulance extends AppCompatActivity {
                             adapter.uname = sp.getString("name", "");
                             adapter.uaddress = sp.getString("address", "");
                             adapter.uphone = sp.getString("mobile", "");
-                            adapter.HospitalId = val[6];
+                            if (sd.getString("from", "").equals("Adapter")) {
+                                adapter.HospitalId = sd.getString("hid","");
+                                adapter.Hname = sd.getString("hname","");
+
+                            } else {
+                                adapter.HospitalId = val[7];
+                                adapter.Hname = val[1];
+                            }
 
                             adapter.notifyDataSetChanged();
                         } else {

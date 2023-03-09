@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -19,14 +19,19 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.EAS"
-        tools:targetApi="31">
+        tools:targetApi="31" >
+        <activity
+            android:name=".HospitalBookings"
+            android:exported="false" />
+        <activity
+            android:name=".AllAmbulanceBookings"
+            android:exported="false" />
         <activity
             android:name=".ForgotPinActivity"
             android:exported="false" />
         <activity
             android:name=".Dashboard.UserAllHospital"
-            android:exported="false"
-            />
+            android:exported="false" />
         <activity
             android:name=".Dashboard.UserDashBoard"
             android:exported="false"
@@ -52,7 +57,8 @@
             android:exported="false" />
         <activity
             android:name=".HospitalHome"
-            android:exported="false" />
+            android:exported="false"
+            android:label="Hospital DashBoard" />
         <activity
             android:name=".HospitalList"
             android:exported="false" />
@@ -67,7 +73,8 @@
             android:exported="false" />
         <activity
             android:name=".AdminHome"
-            android:exported="false" />
+            android:exported="false"
+            android:label="Admin Dashboard" />
         <activity
             android:name=".UpdateAddress"
             android:exported="false" />
@@ -113,7 +120,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

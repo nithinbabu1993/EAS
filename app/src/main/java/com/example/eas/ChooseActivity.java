@@ -334,7 +334,8 @@ public class ChooseActivity extends FragmentActivity implements OnMapReadyCallba
                                     queryDocumentSnapshots.getDocuments().get(i).getString("driverPhone"),
                                     queryDocumentSnapshots.getDocuments().get(i).getString("bdate"),
                                     queryDocumentSnapshots.getDocuments().get(i).getString("dlatitude"),
-                                    queryDocumentSnapshots.getDocuments().get(i).getString("dlongitude")
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("dlongitude"),
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("hname")
                                     ));
                         }
                         if (BookingList.isEmpty()) {

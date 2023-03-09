@@ -30,8 +30,8 @@ public class HospitalHome extends AppCompatActivity {
         binding.imageView4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                startActivity(new Intent(getApplicationContext(), AddAmbulance.class));
-//                finish();
+                startActivity(new Intent(getApplicationContext(), HospitalBookings.class));
+                finish();
             }
         });
     }

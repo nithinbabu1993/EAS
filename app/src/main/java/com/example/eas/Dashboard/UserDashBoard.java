@@ -231,37 +231,7 @@ FloatingActionButton address,endride;
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setZoomGesturesEnabled(true);
 
-//        navigate.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                fab.close(true);
-//                final Intent intent1 = new Intent(Intent.ACTION_VIEW,
-//                        Uri.parse("http://maps.google.com/maps?"
-//                                + "saddr=" + latitude + "," +longitude + "&daddr=" + sp.getString("dlat","") + "," + sp.getString("dlon","")));
-//                intent1.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-//                startActivity(intent1);
-//            }
-//        });
-//        call.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (isReadStorageAllowed()) {
-//                    fab.close(true);
-//                    Intent intent = new Intent(Intent.ACTION_DIAL);
-//                    intent.setData(Uri.parse("tel:" + sp.getString("phone", "")));
-//                    startActivity(intent);
-//                }
-//                else{
-//                    requestStoragePermission();
-//                }
-//            }
-//        });
-
     }
-
-    //We are calling this method to check the permission status
-
-
 
     @Override
     public void onBackPressed() {
@@ -279,7 +249,11 @@ FloatingActionButton address,endride;
         super.onResume();
         MyBookings();
     }
-
+    private void locateLocation(String issue, View view) {
+        Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(issue));
+        intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+        startActivity(intent);
+    }
     private void MyBookings() {
         SharedPreferences sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
 
@@ -310,7 +284,8 @@ FloatingActionButton address,endride;
                                     queryDocumentSnapshots.getDocuments().get(i).getString("driverPhone"),
                                     queryDocumentSnapshots.getDocuments().get(i).getString("bdate"),
                                     queryDocumentSnapshots.getDocuments().get(i).getString("dlatitude"),
-                                    queryDocumentSnapshots.getDocuments().get(i).getString("dlongitude")
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("dlongitude"),
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("hname")
                             ));
                         }
                         if (BookingList.isEmpty()) {
@@ -372,7 +347,7 @@ FloatingActionButton address,endride;
                                         //  mMap.clear();
                                         mMap.addMarker(new MarkerOptions()
                                                 .position(latLng)
-                                                .title("Hospital Name-\t" + Hlist.get(i).getName() + ":" + Hlist.get(i).getAddress() + "\t:\t\tHospital Phone-" + Hlist.get(i).getPhone() + "Distance from you:" + km + "Hospital ID:" + Hlist.get(i).getDevId())
+                                                .title("Hospital Name:\t" + Hlist.get(i).getName() + ":" + Hlist.get(i).getAddress() + "\t:\t\tHospital Phone-" + Hlist.get(i).getPhone() + "Distance from you:" + km + "Hospital ID:" + Hlist.get(i).getDevId())
                                                 .icon(BitmapDescriptorFactory
                                                         .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))).showInfoWindow();
 
@@ -382,6 +357,7 @@ FloatingActionButton address,endride;
                                                 SharedPreferences sd = getSharedPreferences("hospital", Context.MODE_PRIVATE);
                                                 SharedPreferences.Editor ed = sd.edit();
                                                 ed.putString("hname", marker.getTitle());
+                                                ed.putString("from","home");
                                                 ed.commit();
                                                 startActivity(new Intent(getApplicationContext(), ShowAmbulance.class));
                                                 finish();

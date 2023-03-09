@@ -39,6 +39,7 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.Myvi
     LayoutHospitalBinding binding;
     public String uid = "";
     public String HospitalId = "";
+    public String Hname = "";
     public String uname = "";
     public String uaddress = "";
     public String uphone = "";
@@ -188,7 +189,7 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.Myvi
                 uaddress,
                 uphone,
                 Bookingmodel.latitude, Bookingmodel.longitude,
-                aname, dname, dphone, formattedDate,"","");
+                aname, dname, dphone, formattedDate,"","",Hname);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Booking").add(obj).
                 addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

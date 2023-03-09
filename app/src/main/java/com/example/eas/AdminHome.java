@@ -25,6 +25,13 @@ ActivityAdminHomeBinding binding;
                 finish();
             }
         });
+        binding.hospbook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AdminHome.this, AllAmbulanceBookings.class));
+
+            }
+        });
         binding.hospmap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

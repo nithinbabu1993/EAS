@@ -1,25 +1,8 @@
 package com.example.eas.model;
 
 public class Bookingmodel {
-     public static String latitude=null,longitude=null;
-    String uid,ambulanceId,hospitalId,uname,uaddress,uphone,ulatitude,ulongitude,ambNo,driverName,driverPhone,bdate,dlatitude,dlongitude;
-
-    public Bookingmodel(String uid, String ambulanceId, String hospitalId, String uname, String uaddress, String uphone, String ulatitude, String ulongitude, String ambNo, String driverName, String driverPhone, String bdate, String dlatitude, String dlongitude) {
-        this.uid = uid;
-        this.ambulanceId = ambulanceId;
-        this.hospitalId = hospitalId;
-        this.uname = uname;
-        this.uaddress = uaddress;
-        this.uphone = uphone;
-        this.ulatitude = ulatitude;
-        this.ulongitude = ulongitude;
-        this.ambNo = ambNo;
-        this.driverName = driverName;
-        this.driverPhone = driverPhone;
-        this.bdate = bdate;
-        this.dlatitude = dlatitude;
-        this.dlongitude = dlongitude;
-    }
+    public static String latitude = null, longitude = null;
+    String uid, ambulanceId, hospitalId, uname, uaddress, uphone, ulatitude, ulongitude, ambNo, driverName, driverPhone, bdate, dlatitude, dlongitude, hname;
 
     public static String getLatitude() {
         return latitude;
@@ -147,5 +130,31 @@ public class Bookingmodel {
 
     public void setDlongitude(String dlongitude) {
         this.dlongitude = dlongitude;
+    }
+
+    public String getHname() {
+        return hname;
+    }
+
+    public void setHname(String hname) {
+        this.hname = hname;
+    }
+
+    public Bookingmodel(String uid, String ambulanceId, String hospitalId, String uname, String uaddress, String uphone, String ulatitude, String ulongitude, String ambNo, String driverName, String driverPhone, String bdate, String dlatitude, String dlongitude, String hname) {
+        this.uid = uid;
+        this.ambulanceId = ambulanceId;
+        this.hospitalId = hospitalId;
+        this.uname = uname;
+        this.uaddress = uaddress;
+        this.uphone = uphone;
+        this.ulatitude = ulatitude;
+        this.ulongitude = ulongitude;
+        this.ambNo = ambNo;
+        this.driverName = driverName;
+        this.driverPhone = driverPhone;
+        this.bdate = bdate;
+        this.dlatitude = dlatitude;
+        this.dlongitude = dlongitude;
+        this.hname = hname;
     }
 }

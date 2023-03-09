@@ -229,11 +229,11 @@ public class HomeActivity extends AppCompatActivity {
                                     startActivity(new Intent(HomeActivity.this, AdminHome.class));
                                     finish();
                                 } else if (queryDocumentSnapshots.getDocuments().get(0).getString("utype").equals("Hospital")) {
-                                    Toast.makeText(HomeActivity.this, "Login successfull as admin", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(HomeActivity.this, "Login successfull as Hospital", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(HomeActivity.this, HospitalHome.class));
                                     finish();
                                 } else if (queryDocumentSnapshots.getDocuments().get(0).getString("utype").equals("Ambulance")) {
-                                    Toast.makeText(HomeActivity.this, "Login successfull as admin", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(HomeActivity.this, "Login successfull as ambulance", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(HomeActivity.this, AdminHome.class));
                                     finish();
                                 }

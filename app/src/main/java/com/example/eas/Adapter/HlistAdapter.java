@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eas.HospitalList;
+import com.example.eas.ShowAmbulance;
 import com.example.eas.databinding.LayoutHospitalBinding;
 import com.example.eas.model.Hospitalmodel;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -53,10 +55,42 @@ public class HlistAdapter extends RecyclerView.Adapter<HlistAdapter.MyviewHolder
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences sp =  view.getRootView().getContext().getSharedPreferences("LoginData", Context.MODE_PRIVATE);
+                SharedPreferences sp = view.getRootView().getContext().getSharedPreferences("LoginData", Context.MODE_PRIVATE);
                 if (sp.getString("utype", "").equals("User")) {
+                    AlertDialog.Builder alertbox = new AlertDialog.Builder(view.getRootView().getContext());
+                    alertbox.setMessage("what to do?");
+                    alertbox.setTitle("Alert");
 
-                }else {
+                    alertbox.setPositiveButton("call", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent intent = new Intent(Intent.ACTION_DIAL);
+                            intent.setData(Uri.parse("tel:" + dm.getPhone()));
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            view.getRootView().getContext().startActivity(intent);
+
+                        }
+                    });
+                    alertbox.setNegativeButton("Book Ambulance", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            SharedPreferences ss = view.getRootView().getContext().getSharedPreferences("hospital", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor ed = ss.edit();
+                            ed.putString("hname", dm.getName());
+                            ed.putString("from", "Adapter");
+                            ed.putString("hid", dm.getDevId());
+                            ed.commit();
+                            Intent i = new Intent(view.getRootView().getContext(), ShowAmbulance.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            view.getRootView().getContext().startActivity(i);
+                            dialog.dismiss();
+                        }
+                    });
+
+                    alertbox.show();
+
+                } else if (sp.getString("utype", "").equals("Admin")) {
+                } else {
                     AlertDialog.Builder alertbox = new AlertDialog.Builder(view.getRootView().getContext());
                     alertbox.setMessage("Do you really wants to Delete this Hospital?");
                     alertbox.setTitle("Delete!!");
