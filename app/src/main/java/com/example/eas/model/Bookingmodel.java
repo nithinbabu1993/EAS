@@ -2,7 +2,26 @@ package com.example.eas.model;
 
 public class Bookingmodel {
     public static String latitude = null, longitude = null;
-    String uid, ambulanceId, hospitalId, uname, uaddress, uphone, ulatitude, ulongitude, ambNo, driverName, driverPhone, bdate, dlatitude, dlongitude, hname;
+    String uid, ambulanceId, hospitalId, uname, uaddress, uphone, ulatitude, ulongitude, ambNo, driverName, driverPhone, bdate, dlatitude, dlongitude, hname,bstatus;
+
+    public Bookingmodel(String uid, String ambulanceId, String hospitalId, String uname, String uaddress, String uphone, String ulatitude, String ulongitude, String ambNo, String driverName, String driverPhone, String bdate, String dlatitude, String dlongitude, String hname, String bstatus) {
+        this.uid = uid;
+        this.ambulanceId = ambulanceId;
+        this.hospitalId = hospitalId;
+        this.uname = uname;
+        this.uaddress = uaddress;
+        this.uphone = uphone;
+        this.ulatitude = ulatitude;
+        this.ulongitude = ulongitude;
+        this.ambNo = ambNo;
+        this.driverName = driverName;
+        this.driverPhone = driverPhone;
+        this.bdate = bdate;
+        this.dlatitude = dlatitude;
+        this.dlongitude = dlongitude;
+        this.hname = hname;
+        this.bstatus = bstatus;
+    }
 
     public static String getLatitude() {
         return latitude;
@@ -140,21 +159,11 @@ public class Bookingmodel {
         this.hname = hname;
     }
 
-    public Bookingmodel(String uid, String ambulanceId, String hospitalId, String uname, String uaddress, String uphone, String ulatitude, String ulongitude, String ambNo, String driverName, String driverPhone, String bdate, String dlatitude, String dlongitude, String hname) {
-        this.uid = uid;
-        this.ambulanceId = ambulanceId;
-        this.hospitalId = hospitalId;
-        this.uname = uname;
-        this.uaddress = uaddress;
-        this.uphone = uphone;
-        this.ulatitude = ulatitude;
-        this.ulongitude = ulongitude;
-        this.ambNo = ambNo;
-        this.driverName = driverName;
-        this.driverPhone = driverPhone;
-        this.bdate = bdate;
-        this.dlatitude = dlatitude;
-        this.dlongitude = dlongitude;
-        this.hname = hname;
+    public String getBstatus() {
+        return bstatus;
+    }
+
+    public void setBstatus(String bstatus) {
+        this.bstatus = bstatus;
     }
 }

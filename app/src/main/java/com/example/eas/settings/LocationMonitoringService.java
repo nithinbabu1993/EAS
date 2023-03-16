@@ -1,6 +1,7 @@
 package com.example.eas.settings;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -13,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
@@ -26,6 +28,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.example.eas.ForgotPinActivity;
 import com.example.eas.HomeActivity;
 import com.example.eas.R;
+import com.example.eas.TrackAmbulance;
 import com.example.eas.model.Bookingmodel;
 import com.example.eas.model.Hospitalmodel;
 import com.google.android.gms.common.ConnectionResult;
@@ -47,7 +50,10 @@ public class LocationMonitoringService extends Service implements
         LocationListener {
     SharedPreferences jorney;
 
-
+    Thread thread;
+    int counter = 60;
+    Dialog dialog;
+    Boolean b=false;
     FirebaseFirestore db;
     public static final String ACTION_LOCATION_BROADCAST = LocationMonitoringService.class.getName() + "LocationBroadcast";
     public static final String EXTRA_LATITUDE = "extra_latitude";
@@ -161,7 +167,7 @@ public class LocationMonitoringService extends Service implements
         lat1 = lat;
         lon1 = lng;
         Log.d(TAG, "Sending info...");
-        //Toast.makeText(this, lat + lng + "", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, lat + lng + "", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(ACTION_LOCATION_BROADCAST);
         intent.putExtra(EXTRA_LATITUDE, lat);
         intent.putExtra(EXTRA_LONGITUDE, lng);
@@ -189,7 +195,10 @@ public class LocationMonitoringService extends Service implements
 
                  jorney=getSharedPreferences("Ambulancestatus",Context.MODE_PRIVATE);
                 if (jorney.getString("status", "").equals("1")) {
-                            driverUpdation();
+                    if(b==false) {
+                        showDialogue();
+                        b=true;
+                    }
                 } else {
                     Log.d("bgloc", "Location sharing stopped");
 
@@ -201,6 +210,20 @@ public class LocationMonitoringService extends Service implements
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.d(TAG, "Failed to connect to Google API");
+
+    }
+    private void showDialogue() {
+        new CountDownTimer(60000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                counter--;
+            }
+            public void onFinish() {
+                b=false;
+                Toast.makeText(LocationMonitoringService.this, "counter called", Toast.LENGTH_SHORT).show();
+                    driverUpdation();
+                    dialog.dismiss();
+            }
+        }.start();
 
     }
 

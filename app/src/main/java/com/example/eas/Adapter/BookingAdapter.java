@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +21,11 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.eas.Ambulance.AmbulanceHome;
 import com.example.eas.Dashboard.UserDashBoard;
 import com.example.eas.HospitalList;
 import com.example.eas.R;
+import com.example.eas.TrackAmbulance;
 import com.example.eas.databinding.LayoutBookingBinding;
 import com.example.eas.databinding.LayoutHospitalBinding;
 import com.example.eas.model.Bookingmodel;
@@ -60,12 +63,14 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.MyviewHo
         holder.pphone.setText(dm.getUphone());
         holder.hospname.setText(dm.getHname());
         holder.uaddr.setText(dm.getUaddress());
-        if(dm.getDlatitude()!="" && dm.getDlongitude()!=""){
-            holder.dlatlang.setText("Ambulance own its Way");
-
-        }else{
+        if(dm.getBstatus().equals("0")){
             holder.dlatlang.setText("Ambulance not Started");
 
+        }else if(dm.getBstatus().equals("1")){
+            holder.dlatlang.setText("Ambulance Started");
+        }
+        else{
+            holder.dlatlang.setText("Ambulance Stopped");
         }
         SharedPreferences sp = holder.itemView.getContext().getSharedPreferences("LoginData", Context.MODE_PRIVATE);
         if (sp.getString("utype", "").equals("Ambulance")){
@@ -121,6 +126,10 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.MyviewHo
                     alertbox.setPositiveButton("cancel booking", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            SharedPreferences jorney=view.getRootView().getContext().getSharedPreferences("Ambulancestatus",Context.MODE_PRIVATE);
+                            SharedPreferences.Editor ed=jorney.edit();
+                            ed.putString("status","0");
+                            ed.commit();
                             deleteDepartment(dm.getUid(), view, holder.getAdapterPosition());
 
                         }
@@ -138,7 +147,12 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.MyviewHo
                     alertbox.setNeutralButton("Track Ambulance", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
+                            Intent i = new Intent(view.getRootView().getContext(), TrackAmbulance.class);
+                            Bundle b=new Bundle();
+                            b.putString("bid",dm.getUid());
+                            i.putExtras(b);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            view.getRootView().getContext().startActivity(i);
                         }
                     });
                     alertbox.show();
@@ -147,9 +161,13 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.MyviewHo
                     alertbox.setMessage("What to do??");
                     alertbox.setTitle("Booking!!");
 
-                    alertbox.setPositiveButton("cancel booking", new DialogInterface.OnClickListener() {
+                    alertbox.setPositiveButton("cancel/complete booking", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            SharedPreferences jorney=view.getRootView().getContext().getSharedPreferences("Ambulancestatus",Context.MODE_PRIVATE);
+                            SharedPreferences.Editor ed=jorney.edit();
+                            ed.putString("status","0");
+                            ed.commit();
                             deleteDepartment(dm.getUid(), view, holder.getAdapterPosition());
 
                         }
@@ -224,12 +242,22 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.MyviewHo
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        notifyItemChanged(adapterPosition);
-                        Intent i = new Intent(view.getRootView().getContext(), UserDashBoard.class);
-                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        view.getRootView().getContext().startActivity(i);
-                        Toast.makeText(view.getRootView().getContext(), " Booking cancelled successfully", Toast.LENGTH_SHORT).show();
-                    }
+                        SharedPreferences sp = view.getRootView().getContext().getSharedPreferences("LoginData", Context.MODE_PRIVATE);
+
+                        if (sp.getString("utype", "").equals("Ambulance")){
+                              notifyItemChanged(adapterPosition);
+                              Intent i = new Intent(view.getRootView().getContext(), AmbulanceHome.class);
+                              i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                              view.getRootView().getContext().startActivity(i);
+                              Toast.makeText(view.getRootView().getContext(), " Booking cancelled successfully", Toast.LENGTH_SHORT).show();
+
+                          }else {
+                              notifyItemChanged(adapterPosition);
+                              Intent i = new Intent(view.getRootView().getContext(), UserDashBoard.class);
+                              i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                              view.getRootView().getContext().startActivity(i);
+                              Toast.makeText(view.getRootView().getContext(), " Booking cancelled successfully", Toast.LENGTH_SHORT).show();
+                          }  }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {

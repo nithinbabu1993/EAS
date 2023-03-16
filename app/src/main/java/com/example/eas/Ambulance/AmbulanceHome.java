@@ -81,7 +81,8 @@ public class AmbulanceHome extends AppCompatActivity {
                                     queryDocumentSnapshots.getDocuments().get(i).getString("bdate"),
                                     queryDocumentSnapshots.getDocuments().get(i).getString("dlatitude"),
                                     queryDocumentSnapshots.getDocuments().get(i).getString("dlongitude"),
-                                    queryDocumentSnapshots.getDocuments().get(i).getString("hname")
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("hname"),
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("bstatus")
                             ));
                         }
                         if (BookingList.isEmpty()) {
@@ -111,7 +112,10 @@ public class AmbulanceHome extends AppCompatActivity {
         alertbox.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
+                SharedPreferences jorney=getSharedPreferences("Ambulancestatus",Context.MODE_PRIVATE);
+                SharedPreferences.Editor ed=jorney.edit();
+                ed.putString("status","0");
+                ed.commit();
                 SharedPreferences sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putString("utype", "");

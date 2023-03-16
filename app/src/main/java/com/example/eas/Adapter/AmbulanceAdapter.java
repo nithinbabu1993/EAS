@@ -189,7 +189,7 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.Myvi
                 uaddress,
                 uphone,
                 Bookingmodel.latitude, Bookingmodel.longitude,
-                aname, dname, dphone, formattedDate,"","",Hname);
+                aname, dname, dphone, formattedDate,"","",Hname,"0");
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Booking").add(obj).
                 addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

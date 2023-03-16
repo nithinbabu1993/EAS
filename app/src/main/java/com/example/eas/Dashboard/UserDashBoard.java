@@ -281,7 +281,8 @@ FloatingActionButton address,endride;
                                     queryDocumentSnapshots.getDocuments().get(i).getString("bdate"),
                                     queryDocumentSnapshots.getDocuments().get(i).getString("dlatitude"),
                                     queryDocumentSnapshots.getDocuments().get(i).getString("dlongitude"),
-                                    queryDocumentSnapshots.getDocuments().get(i).getString("hname")
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("hname"),
+                                    queryDocumentSnapshots.getDocuments().get(i).getString("bstatus")
                             ));
                         }
                         if (BookingList.isEmpty()) {
