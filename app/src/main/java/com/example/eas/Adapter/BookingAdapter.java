@@ -74,13 +74,36 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.MyviewHo
             holder.btnstart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(v.getContext(), "coming soon", Toast.LENGTH_SHORT).show();
+                    SharedPreferences jorney=v.getRootView().getContext().getSharedPreferences("Ambulancestatus",Context.MODE_PRIVATE);
+                    SharedPreferences.Editor ed=jorney.edit();
+                    ed.putString("bid",dm.getUid());
+                    ed.putString("status","1");
+                    ed.putString("ambulanceId",dm.getAmbulanceId());
+                            ed.putString("hospitalId",dm.getHospitalId());
+                            ed.putString("uname",dm.getUname());
+                            ed.putString("uaddress",dm.getUaddress());
+                            ed.putString("uphone",dm.getUphone());
+                            ed.putString("ulatitude",dm.getUlatitude());
+                            ed.putString("ulongitude",dm.getUlongitude());
+                            ed.putString("ambNo",dm.getAmbNo());
+                            ed.putString("driverName",dm.getDriverName());
+                            ed.putString("driverPhone",dm.getDriverPhone());
+                            ed.putString("bdate",dm.getBdate());
+                            ed.putString("dlatitude",dm.getDlatitude());
+                            ed.putString("dlongitude",dm.getDlongitude());
+                            ed.putString("hname",dm.getHname());
+                    ed.commit();
+                    Toast.makeText(v.getContext(), "Your location sharing started", Toast.LENGTH_SHORT).show();
                 }
             });
             holder.btnstop.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(v.getContext(), "coming soon", Toast.LENGTH_SHORT).show();
+                    SharedPreferences jorney=v.getRootView().getContext().getSharedPreferences("Ambulancestatus",Context.MODE_PRIVATE);
+                    SharedPreferences.Editor ed=jorney.edit();
+                    ed.putString("status","0");
+                    ed.commit();
+                    Toast.makeText(v.getContext(), "your location sharing stopped", Toast.LENGTH_SHORT).show();
 
                 }
             });

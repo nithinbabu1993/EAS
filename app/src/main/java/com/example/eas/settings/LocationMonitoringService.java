@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -16,17 +17,25 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.example.eas.ForgotPinActivity;
+import com.example.eas.HomeActivity;
 import com.example.eas.R;
+import com.example.eas.model.Bookingmodel;
+import com.example.eas.model.Hospitalmodel;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,8 +45,10 @@ import java.util.TimerTask;
 public class LocationMonitoringService extends Service implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
+    SharedPreferences jorney;
 
 
+    FirebaseFirestore db;
     public static final String ACTION_LOCATION_BROADCAST = LocationMonitoringService.class.getName() + "LocationBroadcast";
     public static final String EXTRA_LATITUDE = "extra_latitude";
     public static final String EXTRA_LONGITUDE = "extra_longitude";
@@ -54,7 +65,7 @@ public class LocationMonitoringService extends Service implements
 
     @Override
     public void onCreate() {
-
+        db = FirebaseFirestore.getInstance();
         mLocationClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -77,8 +88,6 @@ public class LocationMonitoringService extends Service implements
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         mLocationClient.connect();
-
-        startTimer();
         startTimer1();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel();
@@ -161,31 +170,9 @@ public class LocationMonitoringService extends Service implements
 
     }
 
-    public void startTimer() {
-        //set a new Timer
-        timer = new Timer();
-
-        //initialize the TimerTask's job
-        initializeTimerTask();
-
-        //schedule the timer, to wake up every 1 second
-        timer.schedule(timerTask, 60000, 60000); //
-    }
-
-    public void initializeTimerTask() {
-        timerTask = new TimerTask() {
-            public void run() {
-                Log.i("in timer", "in timer ++++  " + lat1 + lon1);
-
-//                   Toast.makeText(LocationMonitoringService.this,lat1+""+lon1, Toast.LENGTH_SHORT).show();
-            }
-        };
-    }
-
     public void startTimer1() {
         //set a new Timer
         timer1 = new Timer();
-
         //initialize the TimerTask's job
         initializeTimerTask1();
         //Date currentTime = Calendar.getInstance().getTime();
@@ -200,43 +187,13 @@ public class LocationMonitoringService extends Service implements
 
                 Log.i("bgloc", "in timer ++++  " + lat1 + lon1);
 
-//                    Log.d("bgloc in update", oldlat + "" + oldlon);
-//                    float[] results = new float[1];
-//                    Location.distanceBetween(Double.parseDouble(oldlat), Double.parseDouble(oldlon),
-//                            Double.parseDouble(lat1), Double.parseDouble(lon1),
-//                            results);
+                 jorney=getSharedPreferences("Ambulancestatus",Context.MODE_PRIVATE);
+                if (jorney.getString("status", "").equals("1")) {
+                            driverUpdation();
+                } else {
+                    Log.d("bgloc", "Location sharing stopped");
 
-
-
-
-
-//                        SharedPreferences sp = getSharedPreferences("logindata", Context.MODE_PRIVATE);
-//                        if (sp.getString("utype", "").equals("Rider")) {
-//                            type = "Rider";
-//                            Log.d("bgloc in distance", oldlat + "" + oldlon);
-//                         //   driverUpdation();
-//
-//                            oldlat = lat1;
-//                            oldlon = lon1;
-//                        } else {
-//                            Log.d("bgloc", "id not given");
-//                        }
-//
-//                    if (sp.getString("utype", "").equals("User")) {
-//                            type = "User";
-//                            Log.d("bgloc in distance", oldlat + "" + oldlon);
-//                            driverUpdation();
-//
-//                            oldlat = lat1;
-//                            oldlon = lon1;
-//                        } else {
-//                            Log.d("bgloc", "id not given");
-//                        }
-
-
-
-
-
+                }
             }
         };
     }
@@ -267,22 +224,24 @@ public class LocationMonitoringService extends Service implements
         //stoptimertask();
     }
 
-//    private void driverUpdation() {
-//        SharedPreferences sharedPreferences = getSharedPreferences("logindata", Context.MODE_PRIVATE);
-//        Apiinterface apiinterface = Apiclient.getClient().create(Apiinterface.class);
-//        Call<login_model> call = apiinterface.locupdate("LocUpdateCommon", sharedPreferences.getString("uid",""),sharedPreferences.getString("utype",""),lat1,lon1);
-//        call.enqueue(new Callback<login_model>() {
-//            @Override
-//            public void onResponse(Call<login_model> call, Response<login_model> response) {
-//               // Toast.makeText(LocationMonitoringService.this, "Loc Updated", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onFailure(Call<login_model> call, Throwable t) {
-//                Toast.makeText(LocationMonitoringService.this, t+"", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
+    private void driverUpdation() {
+        db.collection("Booking").document(jorney.getString("bid","")).update("dlatitude",lat1,"dlongitude",lon1)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+
+                Toast.makeText(LocationMonitoringService.this, "Driver location updated", Toast.LENGTH_SHORT).show();
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                Toast.makeText(LocationMonitoringService.this, "updation failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
