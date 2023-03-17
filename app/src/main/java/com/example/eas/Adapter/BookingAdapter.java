@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,13 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eas.Ambulance.AmbulanceHome;
 import com.example.eas.Dashboard.UserDashBoard;
-import com.example.eas.HospitalList;
-import com.example.eas.R;
 import com.example.eas.TrackAmbulance;
 import com.example.eas.databinding.LayoutBookingBinding;
-import com.example.eas.databinding.LayoutHospitalBinding;
 import com.example.eas.model.Bookingmodel;
-import com.example.eas.model.Hospitalmodel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -98,6 +93,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.MyviewHo
                             ed.putString("dlongitude",dm.getDlongitude());
                             ed.putString("hname",dm.getHname());
                     ed.commit();
+                    driverUpdation(v,dm.getUid(),"1");
                     Toast.makeText(v.getContext(), "Your location sharing started", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -108,6 +104,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.MyviewHo
                     SharedPreferences.Editor ed=jorney.edit();
                     ed.putString("status","0");
                     ed.commit();
+                    driverUpdation(v,dm.getUid(),"2");
                     Toast.makeText(v.getContext(), "your location sharing stopped", Toast.LENGTH_SHORT).show();
 
                 }
@@ -201,7 +198,26 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.MyviewHo
             }
         });
     }
+    void driverUpdation(View v, String uid, String status) {
+        FirebaseFirestore db= FirebaseFirestore.getInstance();
+        db.collection("Booking").document(uid).update("dlatitude",Bookingmodel.latitude,"dlongitude",Bookingmodel.longitude,"bstatus",status)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
 
+                        Toast.makeText(v.getContext(), "Driver location updated", Toast.LENGTH_SHORT).show();
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                        Toast.makeText(v.getContext(), "updation failed", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
+    }
     @Override
     public int getItemCount() {
         return bookingList.size();

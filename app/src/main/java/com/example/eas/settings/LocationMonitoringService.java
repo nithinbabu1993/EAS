@@ -27,6 +27,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.eas.ForgotPinActivity;
 import com.example.eas.HomeActivity;
+import com.example.eas.MainActivity;
 import com.example.eas.R;
 import com.example.eas.TrackAmbulance;
 import com.example.eas.model.Bookingmodel;
@@ -64,8 +65,8 @@ public class LocationMonitoringService extends Service implements
     String lat1, lon1, type;
 
     long oldTime = 0;
-    private Timer timer, timer1;
-    private TimerTask timerTask, timerTask1;
+    private Timer apiTimer, timer1;
+    private TimerTask apiTask, timerTask1;
     String driver_Id, oldlat = null, oldlon = null;
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
 
@@ -166,8 +167,11 @@ public class LocationMonitoringService extends Service implements
     private void sendMessageToUI(String lat, String lng) {
         lat1 = lat;
         lon1 = lng;
+        Bookingmodel.latitude=lat;
+        Bookingmodel.longitude=lng;
+
         Log.d(TAG, "Sending info...");
-        Toast.makeText(this, lat + lng + "", Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(this, lat + lng + "", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(ACTION_LOCATION_BROADCAST);
         intent.putExtra(EXTRA_LATITUDE, lat);
         intent.putExtra(EXTRA_LONGITUDE, lng);
@@ -183,8 +187,16 @@ public class LocationMonitoringService extends Service implements
         initializeTimerTask1();
         //Date currentTime = Calendar.getInstance().getTime();
         //schedule the timer, to wake up every 5 minute
-
         timer1.schedule(timerTask1, 10000, 10000); //
+    }
+    public void startApiTimer() {
+        //set a new Timer
+        apiTimer = new Timer();
+        //initialize the TimerTask's job
+        showDialogue();
+        //Date currentTime = Calendar.getInstance().getTime();
+        //schedule the timer, to wake up every 30 seconds
+        apiTimer.schedule(apiTask, 60000, 60000); //
     }
 
     public void initializeTimerTask1() {
@@ -196,7 +208,7 @@ public class LocationMonitoringService extends Service implements
                  jorney=getSharedPreferences("Ambulancestatus",Context.MODE_PRIVATE);
                 if (jorney.getString("status", "").equals("1")) {
                     if(b==false) {
-                        showDialogue();
+                        startApiTimer();
                         b=true;
                     }
                 } else {
@@ -213,25 +225,24 @@ public class LocationMonitoringService extends Service implements
 
     }
     private void showDialogue() {
-        new CountDownTimer(60000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                counter--;
-            }
-            public void onFinish() {
+        apiTask = new TimerTask() {
+            public void run() {
                 b=false;
-                Toast.makeText(LocationMonitoringService.this, "counter called", Toast.LENGTH_SHORT).show();
+                Log.d("bgloc", "Api called ");
+               // Toast.makeText(LocationMonitoringService.this, "counter called", Toast.LENGTH_SHORT).show();
                     driverUpdation();
-                    dialog.dismiss();
+//
             }
-        }.start();
+        };
 
+//
     }
 
     public void stoptimertask() {
         //stop the timer, if it's not already null
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
+        if (timer1 != null) {
+            timer1.cancel();
+            timer1 = null;
         }
     }
 
@@ -248,7 +259,7 @@ public class LocationMonitoringService extends Service implements
     }
 
     private void driverUpdation() {
-        db.collection("Booking").document(jorney.getString("bid","")).update("dlatitude",lat1,"dlongitude",lon1)
+        db.collection("Booking").document(jorney.getString("bid","")).update("dlatitude",lat1,"dlongitude",lon1,"bstatus","1")
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
