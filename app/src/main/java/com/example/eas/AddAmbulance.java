@@ -17,6 +17,7 @@ import com.example.eas.Adapter.HlistAdapter;
 import com.example.eas.databinding.ActivityAddAmbulanceBinding;
 import com.example.eas.model.AmbulanceModel;
 import com.example.eas.model.Hospitalmodel;
+import com.example.eas.settings.Validation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
@@ -55,7 +56,8 @@ public class AddAmbulance extends AppCompatActivity {
                     binding.aname.setError("Enter Ambulance name/number");
                 } else if (binding.dname.getText().toString().isEmpty()) {
                     binding.aname.setError("Enter Ambulance driver name");
-                } else if (binding.dphone.getText().toString().isEmpty()) {
+                } else if (binding.dphone.getText().toString().isEmpty()
+                || !binding.dphone.getText().toString().matches(Validation.mobile)) {
                     binding.aname.setError("Enter Ambulance driver number");
                 }
                 else if (binding.logpin.getText().toString().isEmpty()) {

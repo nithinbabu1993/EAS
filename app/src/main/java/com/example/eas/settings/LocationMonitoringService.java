@@ -198,7 +198,37 @@ public class LocationMonitoringService extends Service implements
         //schedule the timer, to wake up every 30 seconds
         apiTimer.schedule(apiTask, 60000, 60000); //
     }
+    private void showDialogue() {
+        apiTask = new TimerTask() {
+            public void run() {
+                b=false;
+                Log.d("bgloc", "Api called ");
+                // Toast.makeText(LocationMonitoringService.this, "counter called", Toast.LENGTH_SHORT).show();
+                driverUpdation();
+//
+            }
+        };
 
+//
+    }
+    private void driverUpdation() {
+        db.collection("Booking").document(jorney.getString("bid","")).update("dlatitude",lat1,"dlongitude",lon1,"bstatus","1")
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+
+                        Toast.makeText(LocationMonitoringService.this, "Driver location updated", Toast.LENGTH_SHORT).show();
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                        Toast.makeText(LocationMonitoringService.this, "updation failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
     public void initializeTimerTask1() {
         timerTask1 = new TimerTask() {
             public void run() {
@@ -224,19 +254,7 @@ public class LocationMonitoringService extends Service implements
         Log.d(TAG, "Failed to connect to Google API");
 
     }
-    private void showDialogue() {
-        apiTask = new TimerTask() {
-            public void run() {
-                b=false;
-                Log.d("bgloc", "Api called ");
-               // Toast.makeText(LocationMonitoringService.this, "counter called", Toast.LENGTH_SHORT).show();
-                    driverUpdation();
-//
-            }
-        };
 
-//
-    }
 
     public void stoptimertask() {
         //stop the timer, if it's not already null
@@ -258,24 +276,7 @@ public class LocationMonitoringService extends Service implements
         //stoptimertask();
     }
 
-    private void driverUpdation() {
-        db.collection("Booking").document(jorney.getString("bid","")).update("dlatitude",lat1,"dlongitude",lon1,"bstatus","1")
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
 
-                Toast.makeText(LocationMonitoringService.this, "Driver location updated", Toast.LENGTH_SHORT).show();
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-                Toast.makeText(LocationMonitoringService.this, "updation failed", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

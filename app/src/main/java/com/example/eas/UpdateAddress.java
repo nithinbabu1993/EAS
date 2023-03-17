@@ -44,7 +44,7 @@ public class UpdateAddress extends AppCompatActivity {
                 if (binding.uname.getText().toString().isEmpty()) {
                     binding.uname.setError("Enter your name");
                 } else if (binding.uphone.getText().toString().isEmpty() || !binding.uphone.getText().toString().matches(Validation.mobile)) {
-                    binding.uphone.setError("Please enter a valid 10 digit phone number");
+                    binding.uphone.setError("Please enter a valid 10 digit uk phone number");
                 } else if (binding.uaddress.getText().toString().isEmpty()) {
                     binding.uphone.setError("Please enter a valid address");
                 } else {

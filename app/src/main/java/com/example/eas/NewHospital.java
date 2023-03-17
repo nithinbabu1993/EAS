@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.eas.databinding.ActivityNewHospitalBinding;
 import com.example.eas.model.Hospitalmodel;
 import com.example.eas.model.UserModel;
+import com.example.eas.settings.Validation;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -63,7 +64,8 @@ public class NewHospital extends FragmentActivity implements OnMapReadyCallback 
                 else if(binding.hlon.getText().toString().isEmpty()){
                     binding.hlon.setError("Enter hospital longitude");
                 }
-               else if(binding.hphone.getText().toString().isEmpty()){
+               else if(binding.hphone.getText().toString().isEmpty()
+               || !binding.hphone.getText().toString().matches(Validation.mobile)){
                     binding.hphone.setError("Enter hospital phone");
                 }
                 else if(binding.hpin.getText().toString().isEmpty()||binding.hpin.getText().toString().length()<4){
