@@ -94,6 +94,12 @@ public class UpdateAddress extends AppCompatActivity {
         db.collection("User").document(sp.getString("docId", "err")).set(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
+                        sp = getSharedPreferences("LoginData", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putString("name",  binding.uname.getText().toString());
+                        editor.putString("mobile", binding.uphone.getText().toString());
+                        editor.putString("address", binding.uaddress.getText().toString());
+                         editor.commit();
                         progressDoalog.dismiss();
                         Toast.makeText(UpdateAddress.this, "Address updated", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(UpdateAddress.this, UserDashBoard.class));

@@ -95,7 +95,7 @@ public class TrackAmbulance extends FragmentActivity implements OnMapReadyCallba
                                 parseDouble(documentSnapshot.getString("dlongitude")));
                         CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(12).build();
                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                        //  mMap.clear();
+                          mMap.clear();
                         mMap.addMarker(new MarkerOptions()
                                 .position(latLng)
                                 .title("Ambulance is here")

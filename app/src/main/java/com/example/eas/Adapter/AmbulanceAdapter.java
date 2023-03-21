@@ -93,26 +93,31 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.Myvi
 
                     alertbox.show();
                 } else {
-                    AlertDialog.Builder alertbox = new AlertDialog.Builder(view.getRootView().getContext());
-                    alertbox.setMessage("Do you  wants to book this Ambulance?");
-                    alertbox.setTitle("book!!");
+                    SharedPreferences slog = view.getRootView().getContext().getSharedPreferences("LoginData", Context.MODE_PRIVATE);
+                    if (slog.getString("name", "").equals("")) {
+                        Toast.makeText(view.getRootView().getContext(), "please update your address first.After that you can book this Ambulance", Toast.LENGTH_SHORT).show();
+                    } else {
+                        AlertDialog.Builder alertbox = new AlertDialog.Builder(view.getRootView().getContext());
+                        alertbox.setMessage("Do you  wants to book this Ambulance?");
+                        alertbox.setTitle("book!!");
 
-                    alertbox.setPositiveButton("yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                          CheckBookingAvailability(dm.getDevId(), view, holder.getAdapterPosition(),dm);
+                        alertbox.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                CheckBookingAvailability(dm.getDevId(), view, holder.getAdapterPosition(), dm);
 
 
-                        }
-                    });
-                    alertbox.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
+                            }
+                        });
+                        alertbox.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
 
-                    alertbox.show();
+                        alertbox.show();
+                    }
                 }
             }
         });
@@ -189,7 +194,7 @@ public class AmbulanceAdapter extends RecyclerView.Adapter<AmbulanceAdapter.Myvi
                 uaddress,
                 uphone,
                 Bookingmodel.latitude, Bookingmodel.longitude,
-                aname, dname, dphone, formattedDate,"","",Hname,"0");
+                aname, dname, dphone, formattedDate, "", "", Hname, "0");
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Booking").add(obj).
                 addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
