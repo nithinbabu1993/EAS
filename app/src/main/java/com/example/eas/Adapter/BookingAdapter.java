@@ -204,7 +204,9 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.MyviewHo
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-
+                        Intent i = new Intent(v.getRootView().getContext(), AmbulanceHome.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        v.getRootView().getContext().startActivity(i);
                         Toast.makeText(v.getContext(), "Driver location updated", Toast.LENGTH_SHORT).show();
 
                     }
